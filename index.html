@@ -280,7 +280,7 @@
             margin-top: 2px;
         }
 
-        /* 小限命與大限命標籤樣式 */
+        /* 標籤樣式：拔除流年命，保留小限命與大限命 */
         .tag-xiaoxian, .tag-daxian { 
             writing-mode: vertical-rl;
             text-orientation: upright;
@@ -333,10 +333,11 @@
             flex-direction: row-reverse;
             justify-content: flex-start;
             gap: 4px;
-            min-height: 110px; 
+            min-height: 90px; /* 縮減高度確保底部空間 */
             padding-bottom: 4px;
             border-bottom: 1px dashed #cbd5e1;
             overflow: hidden;
+            flex-shrink: 0;
         }
 
         .secondary-stars-row {
@@ -347,7 +348,7 @@
             align-content: flex-start;
             flex-wrap: wrap;
             gap: 3px;
-            flex-grow: 1;
+            flex-grow: 1; /* 佔據剩餘空間 */
             padding-top: 4px;
             overflow: hidden;
         }
@@ -358,10 +359,35 @@
             justify-content: flex-start;
             flex-wrap: wrap;
             gap: 3px;
-            min-height: 38px;
             padding-top: 2px;
             border-top: 1px dotted #e2e8f0;
             overflow: hidden;
+            flex-shrink: 0; /* 防止被擠壓 */
+        }
+
+        /* 宮位底座：解決流年星與神煞重疊問題 */
+        .palace-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            width: 100%;
+            margin-top: auto; /* 永遠固定在最底部 */
+            padding-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .limit-stack-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            align-items: flex-start;
+        }
+
+        .palace-footer-right-group {
+            display: flex;
+            flex-direction: row-reverse;
+            gap: 2px;
+            align-items: flex-end;
         }
 
         .star-v-block {
@@ -428,7 +454,6 @@
         .natal-miao { color: #047857; font-size: 13px; font-weight: bold; margin-bottom: 2px; display: inline-block; }
         .annual-miao { color: #ea580c; font-size: 13px; font-weight: bold; margin-top: 2px; display: inline-block; }
 
-        /* 四化標籤排版：改為水平並列 (透過 flex-direction: column 在 vertical-rl 模式下實現水平排列) */
         .sihua-group {
             display: flex;
             flex-direction: column;
@@ -449,14 +474,6 @@
         .sihua-daxian-char { background: #059669; box-shadow: 0 1px 2px rgba(5, 150, 105, 0.3); }
         .sihua-annual-char { background: #0284c7; box-shadow: 0 1px 2px rgba(2, 132, 199, 0.3); }
 
-        .limit-stack-area {
-            margin-top: 3px;
-            display: flex;
-            flex-direction: column;
-            gap: 1px;
-            align-items: flex-start;
-        }
-
         .xiaoxian-line {
             color: #047857;
             font-size: 12px;
@@ -470,16 +487,6 @@
             font-size: 13px;
             font-weight: bold;
             line-height: 1.1;
-        }
-
-        .palace-footer-right-group {
-            position: absolute;
-            bottom: 0px;
-            right: 0px;
-            display: flex;
-            flex-direction: row-reverse;
-            gap: 2px;
-            align-items: flex-end;
         }
 
         .god-v-badge {
@@ -686,7 +693,6 @@
             .star-v-block.type-minor, .star-v-block.type-annual, .star-v-block.type-annual-malefic { font-size: 13px !important; }
             .star-miao-char { font-size: 11px !important; }
             
-            /* 列印模式四化標籤調整 */
             .sihua-group { gap: 1px !important; margin-top: 2px !important; }
             .sihua-birth-char, .sihua-daxian-char, .sihua-annual-char { font-size: 11px !important; padding: 1px 1px !important; }
 
@@ -809,7 +815,6 @@ const kuiYueMap = {
     "庚": {kui: "丑", yue: "未"}, "辛": {kui: "寅", yue: "午"}, "壬": {kui: "卯", yue: "巳"}, "癸": {kui: "卯", yue: "巳"}
 };
 
-// 修正後的精準四化對應
 const sihuaMap = {
     "甲": { "廉貞": "祿", "破軍": "權", "武曲": "科", "太陽": "忌" },
     "乙": { "天機": "祿", "天梁": "權", "紫微": "科", "太陰": "忌" },
@@ -1155,10 +1160,10 @@ function generateChart() {
 
         let age = lnYear - birthLunarYear + 1;
 
-        // 【大限計算：命宮無大限概念】 - 從命宮的下一個宮位開始起算 1st 大限
+        // 【大限計算：命宮無大限概念】 - 1st大限由命宮下一格起算
         let startAge = bureauNum;
         let dxDir = ((isYangStem && isMale) || (!isYangStem && !isMale)) ? 1 : -1;
-        let drawDxIdx = (mingIdx + dxDir + 120) % 12; // 1st 大限從命宮下一格開始
+        let drawDxIdx = (mingIdx + dxDir + 120) % 12; 
         
         let tigerStemIdx = stems.indexOf(tigerStemMap[yearStem] || "丙");
         const branchOrderForGan = ["寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子", "丑"];
@@ -1176,7 +1181,7 @@ function generateChart() {
             let ageE = ageS + 9;
             chart[bName].daxian = `大限: ${ageS}-${ageE}`;
             
-            // 【大限干調適】 - 從命宮干支嚴格連續順/逆推
+            // 【大限干調適】 - 嚴格連續順/逆推
             let daxianStemIdx = (mingStemIdx + d * dxDir + 100) % 10;
             let pStem = stems[daxianStemIdx];
 
@@ -1188,7 +1193,7 @@ function generateChart() {
             drawDxIdx = (drawDxIdx + dxDir + 120) % 12;
         }
 
-        // 若年齡小於起運局數，則以本命宮為大限（無大限調適）
+        // 若年齡小於起運局數，則以本命宮為大限（無調適）
         if (!currentDxBranch) {
             currentDxBranch = mingBranch;
             currentDxStem = stems[mingStemIdx];
@@ -1265,26 +1270,6 @@ function generateChart() {
                 }
             }
         }
-
-        let x = 0;
-        while ((birthDay + x) % bureauNum !== 0) {
-            x++;
-        }
-        let quotient = (birthDay + x) / bureauNum;
-        let basePalaceIdx = (quotient - 1) % 12; 
-        
-        let ziweiIdx = 0;
-        if (x === 0) {
-            ziweiIdx = basePalaceIdx;
-        } else if (x % 2 === 0) {
-            ziweiIdx = (basePalaceIdx + x) % 12;
-        } else {
-            ziweiIdx = (basePalaceIdx - x + 120) % 12;
-        }
-
-        let zx = { "紫微": ziweiIdx, "天機": (ziweiIdx - 1 + 12) % 12, "太陽": (ziweiIdx - 3 + 12) % 12, "武曲": (ziweiIdx - 4 + 12) % 12, "天同": (ziweiIdx - 5 + 12) % 12, "廉貞": (ziweiIdx - 8 + 12) % 12 };
-        let tianfuIdx = (12 - ziweiIdx) % 12;
-        let tfx = { "天府": tianfuIdx, "太陰": (tianfuIdx + 1) % 12, "貪狼": (tianfuIdx + 2) % 12, "巨門": (tianfuIdx + 3) % 12, "天相": (tianfuIdx + 4) % 12, "天梁": (tianfuIdx + 5) % 12, "七殺": (tianfuIdx + 6) % 12, "破軍": (tianfuIdx + 10) % 12 };
 
         for (let star in zx) {
             let bName = branches[zx[star]];
@@ -1464,7 +1449,6 @@ function generateChart() {
         }
 
         const boshiGods = ["博士", "力士", "青龍", "小耗", "將軍", "奏書", "飛簾", "喜神", "病符", "大耗", "伏兵", "官府"];
-        let luIdxNum = branches.indexOf(autoLu);
         const isYangGenderMale = (isYangStem && isMale) || (!isYangStem && !isMale);
         const boshiDir = isYangGenderMale ? 1 : -1;
         for (let i = 0; i < 12; i++) {
@@ -1526,7 +1510,7 @@ function generateChart() {
             }
             let xiaoxianFormatted = xiaoxianLines.join('<br>');
             
-            // 加入動態宮位標籤：移除流年太歲，保留虛歲小限命與大限命
+            // 標籤顯示控制 (拔除太歲，保留小限、大限)
             let xiaoxianTag = (b === currentXxBranch && viewMode === 'annual') ? `<div class="tag-xiaoxian">小限命</div>` : "";
             let daxianHighlightTag = (b === currentDxBranch && viewMode === 'annual') ? `<div class="tag-daxian">大限命</div>` : "";
             
@@ -1551,7 +1535,7 @@ function generateChart() {
                                 <span>${palaceGanZhi}</span>
                                 ${isShenBadge}
                             </div>
-                            <!-- 小限命、大限命 垂直堆疊（若重疊，大限排在小限下方） -->
+                            <!-- 小限命與大限命標籤垂直堆疊 -->
                             ${xiaoxianTag}
                             ${daxianHighlightTag}
                         </div>
@@ -1565,14 +1549,16 @@ function generateChart() {
                         <div class="secondary-stars-row">${row2Html || ''}</div>
                         ${annualRowHtml}
                         
-                        <div class="limit-stack-area">
-                            <div class="xiaoxian-line">${xiaoxianFormatted}</div>
-                            <div class="daxian-line"><span class="tag-sihua">${daxianTag}</span></div>
-                        </div>
-
-                        <div class="palace-footer-right-group">
-                            ${boshiTag}
-                            ${changshengTag}
+                        <!-- 宮位底座：解決重疊問題 -->
+                        <div class="palace-footer">
+                            <div class="limit-stack-area">
+                                <div class="xiaoxian-line">${xiaoxianFormatted}</div>
+                                <div class="daxian-line"><span class="tag-sihua">${daxianTag}</span></div>
+                            </div>
+                            <div class="palace-footer-right-group">
+                                ${boshiTag}
+                                ${changshengTag}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1643,7 +1629,6 @@ function generateChart() {
         }
         html += `</tr>`;
 
-        // 大限表格排版：遵循命宮起算與大限調適
         let drawTableDxIdx = (mingIdx + dxDir + 120) % 12;
         for (let d = 1; d <= 8; d++) {
             let bName = branches[drawTableDxIdx];
