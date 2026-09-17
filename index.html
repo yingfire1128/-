@@ -1165,7 +1165,7 @@ function generateChart() {
 
         let age = lnYear - birthLunarYear + 1;
 
-        // 【大限計算：命宮無大限概念】 - 1st大限由命宮下一格起算
+        // 【大限計算：命宮無大限概念】
         let startAge = bureauNum;
         let dxDir = ((isYangStem && isMale) || (!isYangStem && !isMale)) ? 1 : -1;
         let drawDxIdx = (mingIdx + dxDir + 120) % 12; 
@@ -1176,7 +1176,6 @@ function generateChart() {
         let currentDxBranch = "";
         let currentDxStem = "";
 
-        // 命宮干支索引 (用於計算大限連續天干)
         let mingBranchIdx = branchOrderForGan.indexOf(mingBranch);
         let mingStemIdx = (tigerStemIdx + mingBranchIdx) % 10;
 
@@ -1186,7 +1185,6 @@ function generateChart() {
             let ageE = ageS + 9;
             chart[bName].daxian = `大限: ${ageS}-${ageE}`;
             
-            // 【大限干調適】 - 嚴格連續順/逆推
             let daxianStemIdx = (mingStemIdx + d * dxDir + 100) % 10;
             let pStem = stems[daxianStemIdx];
 
@@ -1274,6 +1272,29 @@ function generateChart() {
                 }
             }
         }
+
+        // ==========================================
+        // 【核心修正】：重新補回 14 主星定位邏輯
+        // ==========================================
+        let x = 0;
+        while ((birthDay + x) % bureauNum !== 0) {
+            x++;
+        }
+        let quotient = (birthDay + x) / bureauNum;
+        let basePalaceIdx = (quotient - 1) % 12; 
+        
+        let ziweiIdx = 0;
+        if (x === 0) {
+            ziweiIdx = basePalaceIdx;
+        } else if (x % 2 === 0) {
+            ziweiIdx = (basePalaceIdx + x) % 12;
+        } else {
+            ziweiIdx = (basePalaceIdx - x + 120) % 12;
+        }
+
+        let zx = { "紫微": ziweiIdx, "天機": (ziweiIdx - 1 + 12) % 12, "太陽": (ziweiIdx - 3 + 12) % 12, "武曲": (ziweiIdx - 4 + 12) % 12, "天同": (ziweiIdx - 5 + 12) % 12, "廉貞": (ziweiIdx - 8 + 12) % 12 };
+        let tianfuIdx = (12 - ziweiIdx) % 12;
+        let tfx = { "天府": tianfuIdx, "太陰": (tianfuIdx + 1) % 12, "貪狼": (tianfuIdx + 2) % 12, "巨門": (tianfuIdx + 3) % 12, "天相": (tianfuIdx + 4) % 12, "天梁": (tianfuIdx + 5) % 12, "七殺": (tianfuIdx + 6) % 12, "破軍": (tianfuIdx + 10) % 12 };
 
         for (let star in zx) {
             let bName = branches[zx[star]];
@@ -1419,7 +1440,9 @@ function generateChart() {
             }
         });
 
-        // 【重置流年星曜】 - 歲前、將前、流年祿羊陀等
+        // ==========================================
+        // 【流年排盤修復】：將前諸星、歲前諸星及流年祿羊陀
+        // ==========================================
         if (viewMode === 'annual') {
             const jiangqians = ["將星", "攀鞍", "歲驛", "息神", "華蓋", "劫煞", "災煞", "天煞", "指背", "咸池", "月煞", "亡神"];
             let jqStart = "午";
@@ -1438,7 +1461,7 @@ function generateChart() {
             let sqIdx = standardBranches.indexOf(lnBranch);
             for(let i=0; i<12; i++) {
                 let b = standardBranches[(sqIdx + i) % 12];
-                // 依照要求：不顯示太歲星
+                // 依據要求：拔除「太歲」這顆流年星曜的顯示
                 if (suiqians[i] !== "太歲") {
                     pushStar(b, suiqians[i], buildVerticalStar(suiqians[i], "type-annual", b, true), true);
                 }
@@ -1556,7 +1579,7 @@ function generateChart() {
                         <div class="secondary-stars-row">${row2Html || ''}</div>
                         ${annualRowHtml}
                         
-                        <!-- 獨立到底座的歲數與神煞區，不再與流年星曜打架 -->
+                        <!-- 獨立到底座：小限歲數在上，大限歲數在下，右側顯示十二神 -->
                         <div class="palace-footer">
                             <div class="limit-stack-area">
                                 <div class="xiaoxian-line">${xiaoxianFormatted}</div>
