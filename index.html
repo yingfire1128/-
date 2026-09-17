@@ -365,7 +365,6 @@
             flex-shrink: 0;
         }
 
-        /* 將十二神與歲數獨立到底座，絕不與流年星曜重疊 */
         .palace-footer {
             display: flex;
             justify-content: space-between;
@@ -485,7 +484,6 @@
         .natal-miao { color: #047857; font-size: 13px; font-weight: bold; margin-bottom: 2px; display: inline-block; }
         .annual-miao { color: #ea580c; font-size: 13px; font-weight: bold; margin-top: 2px; display: inline-block; }
 
-        /* 四化標籤水平並列 */
         .sihua-group {
             display: flex;
             flex-direction: column;
@@ -714,6 +712,7 @@
 
 <div class="container">
     <div class="brand-header">
+        <!-- 若 GitHub 圖片連結失效，會自動隱藏不破壞版面 -->
         <img id="brandLogoImg" alt="螢火紫微" class="brand-logo-img" onerror="this.style.display='none'">
         <div class="brand-title-wrap">
             <h1>螢火紫微</h1>
@@ -1141,7 +1140,7 @@ function generateChart() {
 
         let starPosMap = {};
 
-        // 【大限與小限年齡計算】
+        // 【五行局數與計算】
         let bureauNum = 3;
         if (bureau.includes("水")) bureauNum = 2;
         else if (bureau.includes("木")) bureauNum = 3;
@@ -1149,6 +1148,7 @@ function generateChart() {
         else if (bureau.includes("土")) bureauNum = 5;
         else if (bureau.includes("火")) bureauNum = 6;
 
+        // 計算虛歲年齡
         let birthLunarYear = parseInt(solarDateStr.split('-')[0]); 
         try {
             let parts = solarDateStr.split('-');
@@ -1165,7 +1165,7 @@ function generateChart() {
 
         let age = lnYear - birthLunarYear + 1;
 
-        // 【大限計算：命宮無大限概念】
+        // 【大限計算：命宮無大限概念】 1st大限由命宮下一格起算
         let startAge = bureauNum;
         let dxDir = ((isYangStem && isMale) || (!isYangStem && !isMale)) ? 1 : -1;
         let drawDxIdx = (mingIdx + dxDir + 120) % 12; 
@@ -1176,6 +1176,7 @@ function generateChart() {
         let currentDxBranch = "";
         let currentDxStem = "";
 
+        // 命宮干支索引 (用於連續推演大限天干)
         let mingBranchIdx = branchOrderForGan.indexOf(mingBranch);
         let mingStemIdx = (tigerStemIdx + mingBranchIdx) % 10;
 
@@ -1274,7 +1275,7 @@ function generateChart() {
         }
 
         // ==========================================
-        // 【核心修正】：重新補回 14 主星定位邏輯
+        // 【核心計算】：14 主星定位邏輯 (補回並維持順序)
         // ==========================================
         let x = 0;
         while ((birthDay + x) % bureauNum !== 0) {
@@ -1305,6 +1306,9 @@ function generateChart() {
             pushStar(bName, star, buildVerticalStar(star, "type-main", bName, false));
         }
 
+        // ==========================================
+        // 【其餘星曜排佈】：乙、丙、丁級星
+        // ==========================================
         let autoLu = luMap[yearStem] || "卯";
         pushStar(autoLu, "祿存", buildVerticalStar("祿存", "type-lucky", autoLu, false));
 
@@ -1461,7 +1465,7 @@ function generateChart() {
             let sqIdx = standardBranches.indexOf(lnBranch);
             for(let i=0; i<12; i++) {
                 let b = standardBranches[(sqIdx + i) % 12];
-                // 依據要求：拔除「太歲」這顆流年星曜的顯示
+                // 依據要求：拔除「太歲」這顆流年星曜的顯示，不渲染它
                 if (suiqians[i] !== "太歲") {
                     pushStar(b, suiqians[i], buildVerticalStar(suiqians[i], "type-annual", b, true), true);
                 }
@@ -1479,6 +1483,9 @@ function generateChart() {
             if(liuMaPos) pushStar(liuMaPos, "流馬", buildVerticalStar("流馬", "type-annual", liuMaPos, true), true);
         }
 
+        // ==========================================
+        // 【十二神煞】：博士與長生
+        // ==========================================
         const boshiGods = ["博士", "力士", "青龍", "小耗", "將軍", "奏書", "飛簾", "喜神", "病符", "大耗", "伏兵", "官府"];
         const isYangGenderMale = (isYangStem && isMale) || (!isYangStem && !isMale);
         const boshiDir = isYangGenderMale ? 1 : -1;
@@ -1579,7 +1586,7 @@ function generateChart() {
                         <div class="secondary-stars-row">${row2Html || ''}</div>
                         ${annualRowHtml}
                         
-                        <!-- 獨立到底座：小限歲數在上，大限歲數在下，右側顯示十二神 -->
+                        <!-- 獨立到底座：歲數在上，大限在下，右側顯示十二神 -->
                         <div class="palace-footer">
                             <div class="limit-stack-area">
                                 <div class="xiaoxian-line">${xiaoxianFormatted}</div>
