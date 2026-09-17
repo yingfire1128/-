@@ -1,13 +1,1677 @@
-<!-- ... 前面的 HTML 與 CSS 保持不變 ... -->
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>螢火紫微 - 專業琉璃命盤引擎</title>
+    <style>
+        :root {
+            --bg-glass: rgba(255, 255, 255, 0.7);
+            --card-glass: rgba(255, 255, 255, 0.92);
+            --card-border: #94a3b8;
+            --text-dark: #0f233a;
+            --star-main: #831843;
+            --star-lucky: #0369a1;
+            --star-malefic: #b91c1c;
+            --star-minor: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: "DFKai-SB", "BiauKai", "標楷體", "STKaiti", serif; 
+            background: linear-gradient(135deg, #e0f2fe 0%, #c7d2fe 45%, #e2e8f0 100%);
+            margin: 0; 
+            padding: 16px 10px; 
+            color: var(--text-dark); 
+            min-height: 100vh;
+        }
+
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            background: var(--bg-glass); 
+            padding: 16px; 
+            border-radius: 16px; 
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 12px 30px rgba(15, 35, 58, 0.1);
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        .brand-logo-img {
+            width: 72px;
+            height: 72px;
+            object-fit: cover;
+            border-radius: 50%;
+            box-shadow: 0 4px 16px rgba(234, 179, 8, 0.35);
+            border: 1.5px solid rgba(253, 224, 71, 0.7);
+            flex-shrink: 0;
+            background: #000;
+        }
+
+        .brand-title-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .brand-title-wrap h1 {
+            font-size: 30px;
+            letter-spacing: 3px;
+            margin: 0;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #0369a1 0%, #1e3a8a 50%, #b45309 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-subtitle {
+            font-size: 13px;
+            color: #64748b;
+            letter-spacing: 2px;
+            margin-top: 3px;
+            font-weight: bold;
+        }
+
+        .form-section {
+            transition: all 0.3s ease;
+        }
+
+        .form-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+            gap: 10px; 
+            margin-bottom: 16px; 
+            background: rgba(255, 255, 255, 0.6); 
+            padding: 12px 16px; 
+            border-radius: 12px; 
+            border: 1px solid rgba(255, 255, 255, 0.9); 
+        }
+
+        .form-group label { 
+            display: block; 
+            font-weight: bold; 
+            margin-bottom: 3px; 
+            font-size: 15px; 
+            color: #1e3a5f; 
+        }
+
+        .form-group select, .form-group input { 
+            width: 100%; 
+            padding: 7px 10px; 
+            border: 1px solid rgba(148, 163, 184, 0.4); 
+            border-radius: 6px; 
+            font-size: 16px; 
+            box-sizing: border-box; 
+            background: rgba(255, 255, 255, 0.95); 
+            color: var(--text-dark);
+            font-family: inherit; 
+            outline: none;
+        }
+
+        .auto-calculated { 
+            background: rgba(224, 242, 254, 0.65) !important; 
+            color: #0369a1 !important; 
+            font-weight: bold; 
+            border-color: rgba(56, 189, 248, 0.5) !important; 
+        }
+
+        .convert-box { 
+            grid-column: 1 / -1; 
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(224, 242, 254, 0.8) 100%); 
+            padding: 12px 16px; 
+            border-radius: 10px; 
+            border: 1px solid rgba(125, 211, 252, 0.6); 
+        }
+
+        .convert-box h3 { 
+            margin: 0 0 6px 0; 
+            font-size: 17px; 
+            color: #0369a1; 
+        }
+
+        .lunar-info { 
+            font-size: 15px; 
+            color: #0284c7; 
+            margin-top: 4px; 
+            font-weight: bold; 
+        }
+
+        .btn-submit {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #075985 100%);
+            color: #fff;
+            padding: 12px 20px;
+            font-size: 19px; 
+            font-weight: bold; 
+            font-family: inherit; 
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .btn-submit:hover { filter: brightness(1.08); }
+
+        .chart-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .chart-toolbar h2 {
+            font-size: 20px;
+            color: #1e3a5f;
+            margin: 0;
+        }
+
+        .btn-action-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 15px;
+            font-size: 15px;
+            font-weight: bold;
+            font-family: inherit;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .btn-back {
+            background: #ffffff;
+            color: #1e3a5f;
+            border-color: rgba(148, 163, 184, 0.5);
+        }
+
+        .btn-print {
+            background: #0f766e;
+            color: #ffffff;
+        }
+
+        .a4-sheet {
+            width: 100%;
+            max-width: 980px;
+            aspect-ratio: 1 / 1.414;
+            margin: 0 auto 20px auto;
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .grid-chart {
+            flex-grow: 1;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 0;
+            border-top: 2px solid #334155;
+            border-left: 2px solid #334155;
+            background: #ffffff;
+        }
+
+        .palace-card {
+            background: #ffffff;
+            padding: 6px 4px;
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            border-right: 2px solid #334155;
+            border-bottom: 2px solid #334155;
+            overflow: hidden;
+        }
+
+        .palace-left-col {
+            width: 32px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            border-right: 1px solid #cbd5e1;
+            padding-right: 3px;
+            margin-right: 3px;
+            user-select: none;
+        }
+
+        .palace-stem-vertical {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            font-size: 18px; 
+            font-weight: bold;
+            color: #0f233a;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .badge-shen {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #38bdf8;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 2px 1px;
+            line-height: 1;
+            margin-top: 2px;
+        }
+
+        .tag-liunian { 
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            background: #0284c7; 
+            color: #fff; 
+            font-weight: bold; 
+            font-size: 13px; 
+            padding: 4px 2px; 
+            border-radius: 4px; 
+            letter-spacing: 1px;
+            display: inline-block;
+        }
+
+        .palace-name-badge {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            font-size: 19px; 
+            font-weight: 900;
+            letter-spacing: 2px;
+            padding: 6px 2px;
+            border-radius: 5px;
+            line-height: 1.1;
+        }
+
+        .palace-name-badge.normal {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #f59e0b;
+        }
+
+        .palace-name-badge.is-ming {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1.5px solid #ef4444;
+        }
+
+        .palace-body {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .primary-stars-row {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-start;
+            gap: 4px;
+            min-height: 110px; 
+            padding-bottom: 4px;
+            border-bottom: 1px dashed #cbd5e1;
+            overflow: hidden;
+        }
+
+        .secondary-stars-row {
+            display: flex;
+            flex-direction: row; 
+            justify-content: flex-start;
+            align-items: flex-start; 
+            align-content: flex-start;
+            flex-wrap: wrap;
+            gap: 3px;
+            flex-grow: 1;
+            padding-top: 4px;
+            overflow: hidden;
+        }
+
+        .annual-stars-row {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            gap: 3px;
+            min-height: 38px;
+            padding-top: 2px;
+            border-top: 1px dotted #e2e8f0;
+            overflow: hidden;
+        }
+
+        .star-v-block {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            display: flex;
+            flex-direction: row; 
+            align-items: center; 
+            justify-content: flex-start; 
+            padding: 2px 2px;
+            border-radius: 4px;
+            line-height: 1.15;
+            letter-spacing: 0px;
+        }
+
+        .star-name-wrapper {
+            display: inline-block;
+        }
+
+        .star-v-block.type-main {
+            background: #fff7ed;
+            color: var(--star-main);
+            font-weight: bold;
+            font-size: 20px; 
+        }
+
+        .star-v-block.type-lucky {
+            background: #f0f9ff;
+            color: var(--star-lucky);
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .star-v-block.type-malefic {
+            background: #fef2f2;
+            color: var(--star-malefic);
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .star-v-block.type-minor {
+            background: #f8fafc;
+            color: var(--star-minor);
+            font-size: 15px; 
+            font-weight: bold; 
+        }
+
+        .star-v-block.type-annual {
+            background: #f0fdf4;
+            color: #166534;
+            font-size: 15px; 
+            font-weight: bold; 
+            border: 1px dashed #86efac;
+        }
+
+        .star-v-block.type-annual-malefic {
+            background: #fef2f2;
+            color: #dc2626;
+            font-size: 15px; 
+            border: 1px dashed #fca5a5;
+            font-weight: bold; 
+        }
+
+        .natal-miao { color: #047857; font-size: 13px; font-weight: bold; margin-bottom: 2px; display: inline-block; }
+        .annual-miao { color: #ea580c; font-size: 13px; font-weight: bold; margin-top: 2px; display: inline-block; }
+
+        .sihua-birth-char {
+            display: inline-block;
+            background: #831843;
+            color: #fdf2f8;
+            border-radius: 2px;
+            font-weight: normal;
+            font-size: 13px;
+            margin-top: 2px; 
+            padding: 1px 2px;
+            line-height: 1;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .sihua-annual-char {
+            display: inline-block;
+            background: #0284c7;
+            color: #ffffff;
+            border-radius: 2px;
+            font-weight: normal;
+            font-size: 13px;
+            margin-top: 2px; 
+            padding: 1px 2px;
+            line-height: 1;
+            box-shadow: 0 1px 2px rgba(2, 132, 199, 0.3);
+        }
+
+        .limit-stack-area {
+            margin-top: 3px;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            align-items: flex-start;
+        }
+
+        .xiaoxian-line {
+            color: #047857;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 1.2;
+            max-width: 170px;
+            word-break: break-all;
+        }
+
+        .daxian-line {
+            font-size: 13px;
+            font-weight: bold;
+            line-height: 1.1;
+        }
+
+        .palace-footer-right-group {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            display: flex;
+            flex-direction: row-reverse;
+            gap: 2px;
+            align-items: flex-end;
+        }
+
+        .god-v-badge {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            padding: 2px 1px;
+            border-radius: 3px;
+            line-height: 1;
+        }
+
+        .boshi-badge { color: #0369a1; background: #f0f9ff; border: 1px solid #bae6fd; }
+        .changsheng-badge { color: #166534; background: #f0fdf4; border: 1px solid #bbf7d0; }
+
+        .center-box {
+            grid-row: 2 / span 2;
+            grid-column: 2 / span 2;
+            border-right: 2px solid #334155;
+            border-bottom: 2px solid #334155;
+            background: #f8fafc;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 16px; 
+            color: #1e3a5f;
+            box-sizing: border-box;
+            line-height: 1.5;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .center-watermark-bg {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 175px;
+            height: 175px;
+            object-fit: contain;
+            opacity: 0.15;
+            pointer-events: none;
+            user-select: none;
+            z-index: 0;
+            border-radius: 50%;
+            filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.45));
+        }
+
+        .center-box > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .center-box h3 { 
+            margin: 0 0 4px 0; 
+            color: #b45309; 
+            font-size: 22px; 
+            letter-spacing: 2px;
+        }
+
+        .limit-sheet-page {
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            background: #ffffff;
+            color: #0f233a;
+        }
+
+        .limit-header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #334155;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .limit-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+            table-layout: fixed;
+        }
+
+        .limit-table td {
+            border: 1px solid #64748b;
+            text-align: center;
+            padding: 8px 4px;
+            font-size: 15px;
+            vertical-align: middle;
+            line-height: 1.3;
+        }
+
+        .limit-dec-cell {
+            width: 8%;
+            font-weight: bold;
+            background: #f8fafc;
+            color: #1e3a8a;
+        }
+
+        .limit-yr-cell {
+            width: 9.2%;
+        }
+
+        .limit-yr-cell b {
+            font-size: 16px;
+            color: #b91c1c; 
+        }
+
+        .limit-sihua-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 24px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .limit-sihua-item {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px dashed #e2e8f0;
+            padding-bottom: 6px;
+        }
+
+        .limit-sihua-label {
+            color: #0369a1;
+            width: 70px;
+            flex-shrink: 0;
+        }
+
+        .limit-sihua-content {
+            flex-grow: 1;
+        }
+
+        .limit-sihua-target {
+            color: #b45309;
+            margin-left: 8px;
+        }
+
+        @page {
+            size: A4 portrait;
+            margin: 5mm; 
+        }
+
+        @media print {
+            body, html { 
+                background: #ffffff !important; 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                width: 100% !important;
+                height: 100% !important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important; 
+            }
+            .container { 
+                max-width: 100% !important; 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                box-shadow: none !important; 
+                border: none !important; 
+            }
+            .form-section, .chart-toolbar, .brand-header { 
+                display: none !important; 
+            }
+            .a4-sheet { 
+                width: 100% !important; 
+                height: 285mm !important; 
+                max-width: 100% !important; 
+                aspect-ratio: auto !important; 
+                margin: 0 auto !important; 
+                padding: 0 !important; 
+                box-shadow: none !important; 
+                border-radius: 0 !important; 
+                page-break-inside: avoid !important;
+            }
+            .page-break {
+                page-break-before: always !important; 
+            }
+            .grid-chart { 
+                height: 100% !important; 
+                border-top: 2px solid #000000 !important; 
+                border-left: 2px solid #000000 !important; 
+            }
+            .palace-card, .center-box { 
+                border-right: 2px solid #000000 !important; 
+                border-bottom: 2px solid #000000 !important; 
+            }
+            .center-watermark-bg { opacity: 0.1 !important; }
+            
+            .palace-stem-vertical { font-size: 15px !important; }
+            .palace-name-badge { font-size: 16px !important; padding: 4px 2px !important; }
+            .star-v-block.type-main { font-size: 16px !important; }
+            .star-v-block.type-lucky, .star-v-block.type-malefic { font-size: 14px !important; }
+            .star-v-block.type-minor, .star-v-block.type-annual, .star-v-block.type-annual-malefic { font-size: 13px !important; }
+            .star-miao-char { font-size: 11px !important; }
+            .sihua-birth-char, .sihua-annual-char { font-size: 12px !important; padding: 1px 2px !important; margin-top: 2px !important; }
+            .tag-liunian { font-size: 12px !important; padding: 2px !important; }
+            .xiaoxian-line, .daxian-line { font-size: 11px !important; }
+            .god-v-badge { font-size: 10px !important; }
+            .center-box { font-size: 14px !important; }
+            .center-box h3 { font-size: 18px !important; margin-bottom: 2px !important; }
+
+            .limit-sheet-page { height: 285mm !important; padding: 10mm !important; }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="brand-header">
+        <img id="brandLogoImg" alt="螢火紫微" class="brand-logo-img">
+        <div class="brand-title-wrap">
+            <h1>螢火紫微</h1>
+            <span class="brand-subtitle">命理占星 · 紫微斗數</span>
+        </div>
+    </div>
+    
+    <div class="form-section" id="formSection">
+        <div class="form-grid">
+            <div class="form-group" style="grid-column: 1 / -1; background: rgba(255, 255, 255, 0.65); padding: 10px 14px; border-radius: 10px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; border: 1px solid rgba(255, 255, 255, 0.9);">
+                <div style="flex: 2; min-width: 180px;">
+                    <label style="color: #0f233a;">👤 命主姓名</label>
+                    <input type="text" id="userName" placeholder="請填寫姓名" style="font-weight: bold; color: #b45309;">
+                </div>
+                <div style="flex: 1; min-width: 170px;">
+                    <label style="color: #0f233a;">🔭 盤面模式選擇</label>
+                    <select id="viewMode" style="font-weight: bold; color: #0284c7;">
+                        <option value="natal">本命盤（生年四化）</option>
+                        <option value="annual" selected>流年盤（動態流年四化）</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="convert-box">
+                <h3>📅 出生時間與推算設定</h3>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <div style="flex: 2; min-width: 160px;">
+                        <label>西曆出生日期 <span style="color:red">*</span></label>
+                        <input type="date" id="solarDate" onchange="autoCalculateAll(false)">
+                    </div>
+                    <div style="flex: 1.2; min-width: 120px;">
+                        <label>出生時間 <span style="color:red">*</span></label>
+                        <input type="time" id="birthTime" onchange="onTimeInputChange()">
+                    </div>
+                    <div style="flex: 1.2; min-width: 150px;">
+                        <label>換算時辰</label>
+                        <select id="hourBranch" onchange="autoCalculateAll(false)">
+                            <option value="" disabled selected>請選擇/自動換算</option>
+                            <option value="子">子時 (23:00-00:59)</option>
+                            <option value="丑">丑時 (01:00-02:59)</option>
+                            <option value="寅">寅時 (03:00-04:59)</option>
+                            <option value="卯">卯時 (05:00-06:59)</option>
+                            <option value="辰">辰時 (07:00-08:59)</option>
+                            <option value="巳">巳時 (09:00-10:59)</option>
+                            <option value="午">午時 (11:00-12:59)</option>
+                            <option value="未">未時 (13:00-14:59)</option>
+                            <option value="申">申時 (15:00-16:59)</option>
+                            <option value="酉">酉時 (17:00-18:59)</option>
+                            <option value="戌">戌時 (19:00-20:59)</option>
+                            <option value="亥">亥時 (21:00-22:59)</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 120px;">
+                        <label>查看流年</label>
+                        <input type="number" id="liuNianYear" onchange="autoCalculateAll(false)">
+                    </div>
+                </div>
+                <div class="lunar-info" id="lunarInfoText">請輸入西曆出生日期與時間</div>
+            </div>
+
+            <div class="form-group"><label>生年干</label><input type="text" id="yearStem" class="auto-calculated" readonly></div>
+            <div class="form-group"><label>生年支</label><input type="text" id="yearBranch" class="auto-calculated" readonly></div>
+            <div class="form-group"><label>性別</label><select id="gender" onchange="autoCalculateAll(false)"><option value="male">男</option><option value="female" selected>女</option></select></div>
+            <div class="form-group"><label>農曆月份</label><input type="number" id="birthMonth" class="auto-calculated" readonly></div>
+            <div class="form-group"><label>農曆日數</label><input type="number" id="birthDay" class="auto-calculated" readonly></div>
+            <div class="form-group"><label>命宮地支</label><input type="text" id="mingBranch" class="auto-calculated" readonly></div>
+            <div class="form-group"><label>五行局</label><input type="text" id="bureau" class="auto-calculated" readonly></div>
+            <div class="form-group"><label>祿存宮位</label><input type="text" id="luBranch" class="auto-calculated" readonly></div>
+            <div class="form-group"><label>左輔宮位</label><input type="text" id="zuofuBranch" class="auto-calculated" readonly></div>
+            <div class="form-group"><label>右弼宮位</label><input type="text" id="youbiBranch" class="auto-calculated" readonly></div>
+
+            <button type="button" class="btn-submit" onclick="startGenerate()">🔮 立即排盤</button>
+        </div>
+    </div>
+
+    <div class="result-section" id="resultContainer" style="display: none;"></div>
+</div>
 
 <script>
-// 1. 移除原本冗長的 LOGO_SVG 變數宣告
-
-// 2. 將 LOGO_BASE64 直接替換為你的 GitHub PNG 圖片連結
-const LOGO_BASE64 = "YOUR_GITHUB_PNG_URL_HERE"; // 請將此處替換為你的 GitHub PNG 連結
+// 請將此處替換為你的 GitHub PNG 圖片網址 (例如 https://raw.githubusercontent.com/.../logo.png)
+const LOGO_BASE64 = "https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/main/logo.png";
 
 const branches = ["寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子", "丑"];
 const standardBranches = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
 const stems = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
 
-// ... 後續的 JavaScript 邏輯完全保持不變 ...
+const twelvePalaceNames = [
+    "命宮", "兄弟", "夫妻", "子女", 
+    "財帛", "疾厄", "遷移", "奴僕", 
+    "官祿", "田宅", "福德", "父母"
+];
+
+const shortStar = {
+    "廉貞": "廉", "破軍": "破", "武曲": "武", "太陽": "陽", "天機": "機",
+    "天梁": "梁", "紫微": "紫", "太陰": "陰", "天同": "同", "文昌": "昌",
+    "巨門": "巨", "貪狼": "貪", "右弼": "弼", "文曲": "曲", "左輔": "輔", "天府": "府"
+};
+
+const luMap = {"甲": "寅", "乙": "卯", "丙": "巳", "丁": "午", "戊": "巳", "己": "午", "庚": "申", "辛": "酉", "壬": "亥", "癸": "子"};
+const kuiYueMap = {
+    "甲": {kui: "丑", yue: "未"}, "乙": {kui: "子", yue: "申"}, "丙": {kui: "亥", yue: "酉"},
+    "丁": {kui: "亥", yue: "酉"}, "戊": {kui: "丑", yue: "未"}, "己": {kui: "子", yue: "申"},
+    "庚": {kui: "丑", yue: "未"}, "辛": {kui: "寅", yue: "午"}, "壬": {kui: "卯", yue: "巳"}, "癸": {kui: "卯", yue: "巳"}
+};
+
+// 修正後的精準四化對應（確保庚年「陽武同陰」、壬年「梁紫府武」無誤）
+const sihuaMap = {
+    "甲": { "廉貞": "祿", "破軍": "權", "武曲": "科", "太陽": "忌" },
+    "乙": { "天機": "祿", "天梁": "權", "紫微": "科", "太陰": "忌" },
+    "丙": { "天同": "祿", "天機": "權", "文昌": "科", "廉貞": "忌" },
+    "丁": { "太陰": "祿", "天同": "權", "天機": "科", "巨門": "忌" },
+    "戊": { "貪狼": "祿", "太陰": "權", "右弼": "科", "天機": "忌" },
+    "己": { "武曲": "祿", "貪狼": "權", "天梁": "科", "文曲": "忌" },
+    "庚": { "太陽": "祿", "武曲": "權", "天同": "科", "太陰": "忌" },
+    "辛": { "巨門": "祿", "太陽": "權", "文曲": "科", "文昌": "忌" },
+    "壬": { "天梁": "祿", "紫微": "權", "天府": "科", "武曲": "忌" },
+    "癸": { "破軍": "祿", "巨門": "權", "太陰": "科", "貪狼": "忌" }
+};
+
+const liuNianSihuaMap = {
+    "甲": { "廉貞": "祿", "破軍": "權", "武曲": "科", "太陽": "忌" },
+    "乙": { "天機": "祿", "天梁": "權", "紫微": "科", "太陰": "忌" },
+    "丙": { "天同": "祿", "天機": "權", "文昌": "科", "廉貞": "忌" },
+    "丁": { "太陰": "祿", "天同": "權", "天機": "科", "巨門": "忌" },
+    "戊": { "貪狼": "祿", "太陰": "權", "右弼": "科", "天機": "忌" },
+    "己": { "武曲": "祿", "貪狼": "權", "天梁": "科", "文曲": "忌" },
+    "庚": { "太陽": "祿", "武曲": "權", "天同": "科", "太陰": "忌" },
+    "辛": { "巨門": "祿", "太陽": "權", "文曲": "科", "文昌": "忌" },
+    "壬": { "天梁": "祿", "紫微": "權", "天府": "科", "武曲": "忌" },
+    "癸": { "破軍": "祿", "巨門": "權", "太陰": "科", "貪狼": "忌" }
+};
+
+const rawMiaoWangMap = {
+    "紫微": { "子": "地", "丑": "廟", "寅": "旺", "卯": "旺", "辰": "地", "巳": "旺", "午": "廟", "未": "廟", "申": "旺", "酉": "旺", "戌": "地", "亥": "旺" },
+    "天機": { "子": "廟", "丑": "陷", "寅": "地", "卯": "旺", "辰": "旺", "巳": "地", "午": "廟", "未": "陷", "申": "地", "酉": "陷", "戌": "旺", "亥": "地" },
+    "太陽": { "子": "陷", "丑": "地", "寅": "旺", "卯": "廟", "辰": "旺", "巳": "地", "午": "廟", "未": "地", "申": "地", "酉": "地", "戌": "地", "亥": "陷" },
+    "武曲": { "子": "旺", "丑": "廟", "寅": "地", "卯": "旺", "辰": "廟", "巳": "地", "午": "旺", "未": "廟", "申": "地", "酉": "旺", "戌": "廟", "亥": "地" },
+    "天同": { "子": "旺", "丑": "地", "寅": "地", "卯": "廟", "辰": "地", "巳": "廟", "午": "陷", "未": "地", "申": "旺", "酉": "地", "戌": "地", "亥": "廟" },
+    "廉貞": { "子": "地", "丑": "旺", "寅": "地", "卯": "地", "辰": "旺", "巳": "陷", "午": "地", "未": "廟", "申": "地", "酉": "旺", "戌": "廟", "亥": "陷" },
+    "天府": { "子": "廟", "丑": "廟", "寅": "廟", "卯": "地", "辰": "廟", "巳": "地", "午": "旺", "未": "廟", "申": "地", "酉": "旺", "戌": "廟", "亥": "地" },
+    "太陰": { "子": "廟", "丑": "廟", "寅": "陷", "卯": "陷", "辰": "陷", "巳": "陷", "午": "陷", "未": "地", "申": "旺", "酉": "旺", "戌": "旺", "亥": "廟" },
+    "貪狼": { "子": "旺", "丑": "旺", "寅": "地", "卯": "地", "辰": "廟", "巳": "陷", "午": "旺", "未": "廟", "申": "地", "酉": "旺", "戌": "廟", "亥": "陷" },
+    "巨門": { "子": "旺", "丑": "地", "寅": "陷", "卯": "廟", "辰": "地", "巳": "地", "午": "旺", "未": "地", "申": "陷", "酉": "旺", "戌": "地", "亥": "旺" },
+    "天相": { "子": "廟", "丑": "廟", "寅": "廟", "卯": "陷", "辰": "地", "巳": "地", "午": "地", "未": "地", "申": "廟", "酉": "陷", "戌": "地", "亥": "地" },
+    "天梁": { "子": "廟", "丑": "旺", "寅": "陷", "卯": "陷", "辰": "陷", "巳": "地", "午": "廟", "未": "旺", "申": "陷", "酉": "地", "戌": "廟", "亥": "陷" },
+    "七殺": { "子": "旺", "丑": "廟", "寅": "廟", "卯": "旺", "辰": "地", "巳": "地", "午": "旺", "未": "陷", "申": "廟", "酉": "旺", "戌": "廟", "亥": "地" },
+    "破軍": { "子": "廟", "丑": "旺", "寅": "地", "卯": "陷", "辰": "旺", "巳": "地", "午": "廟", "未": "旺", "申": "陷", "酉": "陷", "戌": "旺", "亥": "地" },
+    "祿存": { "子": "廟", "丑": "",  "寅": "廟", "卯": "廟", "辰": "",  "巳": "廟", "午": "旺", "未": "",  "申": "廟", "酉": "廟", "戌": "",  "亥": "陷" },
+    "擎羊": { "子": "陷", "丑": "廟", "寅": "",  "卯": "陷", "辰": "",  "巳": "廟", "午": "陷", "未": "地", "申": "",  "酉": "陷", "戌": "",  "亥": "" },
+    "陀羅": { "子": "",  "丑": "廟", "寅": "陷", "卯": "",  "辰": "廟", "巳": "陷", "午": "",  "未": "",  "申": "陷", "酉": "廟", "戌": "",  "亥": "陷" },
+    "火星": { "子": "",  "丑": "旺", "寅": "廟", "卯": "地", "辰": "",  "巳": "",  "午": "",  "未": "",  "申": "",  "酉": "旺", "戌": "",  "亥": "" },
+    "鈴星": { "子": "",  "丑": "",  "寅": "",  "卯": "廟", "辰": "",  "巳": "",  "午": "",  "未": "",  "申": "",  "酉": "",  "戌": "",  "亥": "廟" },
+    "左輔": { "子": "旺", "丑": "廟", "寅": "廟", "卯": "旺", "辰": "廟", "巳": "地", "午": "廟", "未": "廟", "申": "廟", "酉": "旺", "戌": "廟", "亥": "旺" },
+    "右弼": { "子": "旺", "丑": "廟", "寅": "廟", "卯": "旺", "辰": "廟", "巳": "廟", "午": "廟", "未": "廟", "申": "陷", "酉": "旺", "戌": "廟", "亥": "旺" },
+    "文昌": { "子": "旺", "丑": "廟", "寅": "陷", "卯": "地", "辰": "旺", "巳": "地", "午": "陷", "未": "地", "申": "旺", "酉": "廟", "戌": "陷", "亥": "旺" },
+    "文曲": { "子": "廟", "丑": "廟", "寅": "地", "卯": "旺", "辰": "廟", "巳": "地", "午": "陷", "未": "地", "申": "廟", "酉": "地", "戌": "陷", "亥": "旺" },
+    "天空": { "子": "地", "丑": "陷", "寅": "陷", "卯": "地", "辰": "陷", "巳": "旺", "午": "廟", "未": "地", "申": "廟", "酉": "陷", "戌": "陷", "亥": "陷" },
+    "地劫": { "子": "陷", "丑": "陷", "寅": "地", "卯": "地", "辰": "陷", "巳": "廟", "午": "廟", "未": "地", "申": "旺", "酉": "地", "戌": "地", "亥": "旺" }
+};
+
+function getHardcodedMiao(starName, palaceBranch) {
+    let baseName = starName.replace('流', '');
+    if (baseName === '羊') baseName = '擎羊';
+    if (baseName === '陀') baseName = '陀羅';
+    if (baseName === '祿') baseName = '祿存';
+    if (baseName === '魁') baseName = '天魁';
+    if (baseName === '鉞') baseName = '天鉞';
+    if (baseName === '馬') baseName = '天馬';
+
+    let stdB = standardBranches[(branches.indexOf(palaceBranch) + 2) % 12];
+    if (rawMiaoWangMap[baseName] && rawMiaoWangMap[baseName][stdB]) {
+        let val = rawMiaoWangMap[baseName][stdB];
+        if (!val) return "";
+        return ["平", "利", "得"].includes(val) ? "地" : val;
+    }
+    return "";
+}
+
+function getChineseLunarString(m, d) {
+    const months = ['','正','二','三','四','五','六','七','八','九','十','十一','十二'];
+    const days = ['','初一','初二','初三','初四','初五','初六','初七','初八','初九','初十',
+        '十一','十二','十三','十四','十五','十六','十七','十八','十九','二十',
+        '廿一','廿二','廿三','廿四','廿五','廿六','廿七','廿八','廿九','三十'];
+    let monthStr = months[m] || m;
+    let dayStr = days[d] || d;
+    return `${monthStr}月${dayStr}`;
+}
+
+const mingZhuMap = {
+    "子": "貪狼", "丑": "巨門", "寅": "祿存", "卯": "文曲", "辰": "廉貞", "巳": "武曲",
+    "午": "破軍", "未": "武曲", "申": "廉貞", "酉": "文曲", "戌": "祿存", "亥": "巨門"
+};
+
+const shenZhuMap = {
+    "子": "火星", "丑": "天相", "寅": "天梁", "卯": "天同", "辰": "文昌", "巳": "天機",
+    "午": "火星", "未": "天相", "申": "天梁", "酉": "天同", "戌": "文昌", "亥": "天機"
+};
+
+const monthBranchesMap = ["", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子", "丑"];
+
+const fullNayinBureauMap = {
+    "甲子": "金四局", "乙丑": "金四局", "丙寅": "火六局", "丁卯": "火六局", "戊辰": "木三局", "己巳": "木三局",
+    "庚午": "土五局", "辛未": "土五局", "壬申": "金四局", "癸酉": "金四局", "甲戌": "火六局", "乙亥": "火六局",
+    "丙子": "水二局", "丁丑": "水二局", "戊寅": "土五局", "己卯": "土五局", "庚辰": "金四局", "辛巳": "金四局",
+    "壬午": "木三局", "癸未": "木三局", "甲申": "水二局", "乙酉": "水二局", "丙戌": "土五局", "丁亥": "土五局",
+    "戊子": "火六局", "己丑": "火六局", "庚寅": "木三局", "辛卯": "木三局", "壬辰": "水二局", "癸巳": "水二局",
+    "甲午": "金四局", "乙未": "金四局", "丙申": "火六局", "丁酉": "火六局", "戊戌": "木三局", "己亥": "木三局",
+    "庚子": "土五局", "辛丑": "土五局", "壬寅": "金四局", "癸卯": "金四局", "甲辰": "火六局", "乙巳": "火六局",
+    "丙午": "水二局", "丁未": "水二局", "戊申": "土五局", "己酉": "土五局", "庚戌": "金四局", "辛亥": "金四局",
+    "壬子": "木三局", "癸丑": "木三局", "甲寅": "水二局", "乙卯": "水二局", "丙辰": "土五局", "丁巳": "土五局",
+    "戊午": "火六局", "己未": "火六局", "庚申": "木三局", "辛酉": "木三局", "壬戌": "水二局", "癸亥": "水二局"
+};
+
+const tigerStemMap = {
+    "甲": "丙", "己": "丙", "乙": "戊", "庚": "戊",
+    "丙": "庚", "辛": "庚", "丁": "壬", "壬": "壬",
+    "戊": "甲", "癸": "甲"
+};
+
+const row1Stars = [
+    "紫微", "天機", "太陽", "武曲", "天同", "廉貞", 
+    "天府", "太陰", "貪狼", "巨門", "天相", "天梁", "七殺", "破軍",
+    "左輔", "右弼", "文昌", "文曲", "天魁", "天鉞", "祿存",
+    "擎羊", "陀羅", "火星", "鈴星"
+];
+
+function getTimeBranch(timeStr) {
+    if (!timeStr) return "";
+    const parts = timeStr.split(":");
+    const h = parseInt(parts[0], 10);
+    if (isNaN(h)) return "";
+    if (h === 23 || h === 0) return "子";
+    if (h >= 1 && h < 3) return "丑";
+    if (h >= 3 && h < 5) return "寅";
+    if (h >= 5 && h < 7) return "卯";
+    if (h >= 7 && h < 9) return "辰";
+    if (h >= 9 && h < 11) return "巳";
+    if (h >= 11 && h < 13) return "午";
+    if (h >= 13 && h < 15) return "未";
+    if (h >= 15 && h < 17) return "申";
+    if (h >= 17 && h < 19) return "酉";
+    if (h >= 19 && h < 21) return "戌";
+    if (h >= 21 && h < 23) return "亥";
+    return "";
+}
+
+function onTimeInputChange() {
+    const timeVal = document.getElementById('birthTime').value;
+    const branch = getTimeBranch(timeVal);
+    if (branch) document.getElementById('hourBranch').value = branch;
+    autoCalculateAll(false);
+}
+
+function clearFields() {
+    document.getElementById('yearStem').value = "";
+    document.getElementById('yearBranch').value = "";
+    document.getElementById('birthMonth').value = "";
+    document.getElementById('birthDay').value = "";
+    document.getElementById('mingBranch').value = "";
+    document.getElementById('bureau').value = "";
+    document.getElementById('luBranch').value = "";
+    document.getElementById('zuofuBranch').value = "";
+    document.getElementById('youbiBranch').value = "";
+}
+
+function autoCalculateAll(triggerRender = true) {
+    try {
+        const val = document.getElementById('solarDate').value;
+        const timeVal = document.getElementById('birthTime').value;
+        let hourBranch = document.getElementById('hourBranch').value;
+
+        if (!val || !timeVal || !hourBranch) {
+            document.getElementById('lunarInfoText').innerText = "請完整輸入出生日期與時間";
+            clearFields();
+            return;
+        }
+
+        let lunarMonth = 1, lunarDay = 1, yearStem = '甲', yearBranch = '子';
+
+        if (val && typeof Solar !== 'undefined') {
+            try {
+                let match = val.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+                if (match) {
+                    let y = parseInt(match[1]), m = parseInt(match[2]), d = parseInt(match[3]);
+                    let timeParts = timeVal.split(":");
+                    let hourNum = parseInt(timeParts[0], 10);
+
+                    if (hourNum === 23) {
+                        let dt = new Date(y, m - 1, d);
+                        dt.setDate(dt.getDate() + 1);
+                        y = dt.getFullYear();
+                        m = dt.getMonth() + 1;
+                        d = dt.getDate();
+                    }
+
+                    let solar = Solar.fromYmd(y, m, d);
+                    let lunar = solar.getLunar();
+                    yearStem = lunar.getYearGan();
+                    yearBranch = lunar.getYearZhi();
+                    lunarMonth = Math.abs(lunar.getMonth());
+                    lunarDay = lunar.getDay();
+                    
+                    let nightNotice = (hourNum === 23) ? "（23點起算翌日子時）" : "";
+                    document.getElementById('lunarInfoText').innerText = `✨ 自動換算：${lunar.getYearInGanZhi()}年 ${lunar.getMonthInChinese()}月 ${lunar.getDayInChinese()} (${lunar.getShengXiao()}) ${nightNotice}`;
+                }
+            } catch (err) {
+                console.warn(err);
+            }
+        }
+
+        document.getElementById('yearStem').value = yearStem;
+        document.getElementById('yearBranch').value = yearBranch;
+        document.getElementById('birthMonth').value = lunarMonth;
+        document.getElementById('birthDay').value = lunarDay;
+
+        document.getElementById('luBranch').value = luMap[yearStem] || "卯";
+        let zuofuIdx = (branches.indexOf("辰") + (lunarMonth - 1)) % 12;
+        let youbiIdx = (branches.indexOf("戌") - (lunarMonth - 1) + 120) % 12;
+        document.getElementById('zuofuBranch').value = branches[zuofuIdx];
+        document.getElementById('youbiBranch').value = branches[youbiIdx];
+
+        const hourOrders = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
+        let hIdx = hourOrders.indexOf(hourBranch);
+        let mingIdx = (((0 + (lunarMonth - 1)) % 12) - hIdx + 120) % 12;
+        let autoMing = branches[mingIdx];
+        document.getElementById('mingBranch').value = autoMing;
+
+        let tigerStem = tigerStemMap[yearStem] || "丙";
+        let tigerStemIdx = stems.indexOf(tigerStem);
+        let distFromYin = (mingIdx - 0 + 12) % 12;
+        let mingStemIdx = (tigerStemIdx + distFromYin) % 10;
+        let mingJiaZi = stems[mingStemIdx] + autoMing;
+        document.getElementById('bureau').value = fullNayinBureauMap[mingJiaZi] || "未知局數";
+
+        if (triggerRender) generateChart();
+    } catch (e) {
+        if (triggerRender) generateChart();
+    }
+}
+
+function startGenerate() {
+    const val = document.getElementById('solarDate').value;
+    const timeVal = document.getElementById('birthTime').value;
+    const hourBranch = document.getElementById('hourBranch').value;
+
+    if (!val || !timeVal || !hourBranch) {
+        alert("⚠️ 請先完整輸入您的西曆出生日期及時間！");
+        return;
+    }
+
+    autoCalculateAll(false);
+    generateChart();
+    document.getElementById('formSection').style.display = 'none';
+    document.getElementById('resultContainer').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function backToForm() {
+    document.getElementById('formSection').style.display = 'block';
+    document.getElementById('resultContainer').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function printChart() {
+    window.print();
+}
+
+window.onload = function() { 
+    let brandLogo = document.getElementById('brandLogoImg');
+    if (brandLogo) brandLogo.src = LOGO_BASE64;
+    
+    document.getElementById('liuNianYear').value = new Date().getFullYear();
+};
+
+function generateChart() {
+    try {
+        const userName = document.getElementById('userName').value || '未知命主';
+        const viewMode = document.getElementById('viewMode').value || 'natal';
+        const solarDateStr = document.getElementById('solarDate').value;
+        const birthTimeStr = document.getElementById('birthTime').value;
+        const yearStem = document.getElementById('yearStem').value;
+        const yearBranch = document.getElementById('yearBranch').value;
+        const gender = document.getElementById('gender').value || 'female';
+        const birthMonth = parseInt(document.getElementById('birthMonth').value);
+        const birthDay = parseInt(document.getElementById('birthDay').value);
+        const hourBranch = document.getElementById('hourBranch').value;
+        const mingBranch = document.getElementById('mingBranch').value;
+        const bureau = document.getElementById('bureau').value;
+        
+        const lnYear = parseInt(document.getElementById('liuNianYear').value);
+        const lnStem = stems[(lnYear - 4) % 10];
+        const lnBranch = standardBranches[(lnYear - 4) % 12];
+
+        const isMale = (gender === 'male');
+        const isYangStem = ["甲", "丙", "戊", "庚", "壬"].includes(yearStem);
+        let yinYangGenderStr = (isYangStem ? "陽" : "陰") + (isMale ? "男" : "女");
+
+        const birthSihua = sihuaMap[yearStem] || {};
+        const annualSihua = liuNianSihuaMap[lnStem] || {};
+
+        const hourOrders = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
+        let mingIdx = branches.indexOf(mingBranch);
+        
+        let shenOffsetMap = { "子": 0, "丑": 1, "寅": 2, "卯": 3, "辰": 4, "巳": 5, "午": 0, "未": 1, "申": 2, "酉": 3, "戌": 4, "亥": 5 };
+        let shenIdx = (mingIdx + (shenOffsetMap[hourBranch] || 0) + 120) % 12;
+        let shenBranch = branches[shenIdx];
+
+        let yearBranchIdx = standardBranches.indexOf(yearBranch);
+        let revCountIdx = (0 - (birthMonth - 1) + 120) % 12;
+        let birthHourIdx = hourOrders.indexOf(hourBranch);
+        let doujunStandardIdx = (revCountIdx + birthHourIdx + 120) % 12;
+        let doujunBranchCalc = standardBranches[doujunStandardIdx];
+
+        let mingZhuStar = mingZhuMap[mingBranch] || "";
+        let shenZhuStar = shenZhuMap[yearBranch] || "";
+
+        let chart = {};
+        branches.forEach(b => chart[b] = { row1: [], row2: [], row3: [], daxian: '', boshi: '', changsheng: '', xiaoxian: [] });
+
+        const liuLuMap = {"甲": "寅", "乙": "卯", "丙": "巳", "丁": "午", "戊": "巳", "己": "午", "庚": "申", "辛": "酉", "壬": "亥", "癸": "子"};
+        const liuLuBranch = liuLuMap[lnStem] || "卯";
+        let liuQyBranch = branches[(branches.indexOf(liuLuBranch) + 1) % 12];
+        let liuTlBranch = branches[(branches.indexOf(liuLuBranch) - 1 + 12) % 12];
+        let liuKy = kuiYueMap[lnStem] || {kui: "丑", yue: "未"};
+
+        let starPosMap = {};
+
+        function buildVerticalStar(starName, starType, palaceBranch, isAnnual = false) {
+            let natalMiaoVal = "";
+            let annualMiaoVal = "";
+
+            if (isAnnual) {
+                annualMiaoVal = getHardcodedMiao(starName, palaceBranch);
+            } else {
+                natalMiaoVal = getHardcodedMiao(starName, palaceBranch);
+                if (viewMode === 'annual') {
+                    annualMiaoVal = getHardcodedMiao(starName, lnBranch);
+                }
+            }
+
+            let nH = natalMiaoVal ? `<span class="star-miao-char natal-miao">${natalMiaoVal}</span>` : "";
+            let aH = "";
+            if (annualMiaoVal && viewMode === 'annual' && annualMiaoVal !== natalMiaoVal) {
+                aH = `<span class="star-miao-char annual-miao">${annualMiaoVal}</span>`;
+            }
+
+            let bSihua = (!isAnnual && birthSihua[starName]) ? `<span class="sihua-birth-char">${birthSihua[starName]}</span>` : "";
+            let aSihua = (!isAnnual && viewMode === 'annual' && annualSihua[starName]) ? `<span class="sihua-annual-char">${annualSihua[starName]}</span>` : "";
+
+            return `
+                <div class="star-v-block ${starType}">
+                    ${nH}
+                    <span class="star-name-wrapper">${starName}</span>
+                    ${aH}
+                    ${bSihua}
+                    ${aSihua}
+                </div>
+            `;
+        }
+
+        function pushStar(branchName, starName, starHtml, isAnnualRow = false) {
+            if (branches.includes(branchName)) {
+                if (!isAnnualRow) {
+                    starPosMap[starName] = branchName; 
+                }
+                if (isAnnualRow) {
+                    chart[branchName].row3.push(starHtml);
+                } else if (row1Stars.includes(starName)) {
+                    chart[branchName].row1.push(starHtml);
+                } else {
+                    chart[branchName].row2.push(starHtml);
+                }
+            }
+        }
+
+        let bureauNum = 3;
+        if (bureau.includes("水")) bureauNum = 2;
+        else if (bureau.includes("木")) bureauNum = 3;
+        else if (bureau.includes("金")) bureauNum = 4;
+        else if (bureau.includes("土")) bureauNum = 5;
+        else if (bureau.includes("火")) bureauNum = 6;
+        
+        let x = 0;
+        while ((birthDay + x) % bureauNum !== 0) {
+            x++;
+        }
+        let quotient = (birthDay + x) / bureauNum;
+        let basePalaceIdx = (quotient - 1) % 12; 
+        
+        let ziweiIdx = 0;
+        if (x === 0) {
+            ziweiIdx = basePalaceIdx;
+        } else if (x % 2 === 0) {
+            ziweiIdx = (basePalaceIdx + x) % 12;
+        } else {
+            ziweiIdx = (basePalaceIdx - x + 120) % 12;
+        }
+
+        let zx = { "紫微": ziweiIdx, "天機": (ziweiIdx - 1 + 12) % 12, "太陽": (ziweiIdx - 3 + 12) % 12, "武曲": (ziweiIdx - 4 + 12) % 12, "天同": (ziweiIdx - 5 + 12) % 12, "廉貞": (ziweiIdx - 8 + 12) % 12 };
+        let tianfuIdx = (12 - ziweiIdx) % 12;
+        let tfx = { "天府": tianfuIdx, "太陰": (tianfuIdx + 1) % 12, "貪狼": (tianfuIdx + 2) % 12, "巨門": (tianfuIdx + 3) % 12, "天相": (tianfuIdx + 4) % 12, "天梁": (tianfuIdx + 5) % 12, "七殺": (tianfuIdx + 6) % 12, "破軍": (tianfuIdx + 10) % 12 };
+
+        for (let star in zx) {
+            let bName = branches[zx[star]];
+            pushStar(bName, star, buildVerticalStar(star, "type-main", bName, false));
+        }
+        for (let star in tfx) {
+            let bName = branches[tfx[star]];
+            pushStar(bName, star, buildVerticalStar(star, "type-main", bName, false));
+        }
+
+        let autoLu = luMap[yearStem] || "卯";
+        pushStar(autoLu, "祿存", buildVerticalStar("祿存", "type-lucky", autoLu, false));
+
+        let luIdxNum = branches.indexOf(autoLu);
+        let qingyangPos = branches[(luIdxNum + 1) % 12];
+        pushStar(qingyangPos, "擎羊", buildVerticalStar("擎羊", "type-malefic", qingyangPos, false));
+
+        let tuoluoPos = branches[(luIdxNum - 1 + 12) % 12];
+        pushStar(tuoluoPos, "陀羅", buildVerticalStar("陀羅", "type-malefic", tuoluoPos, false));
+
+        let ky = kuiYueMap[yearStem] || {kui: "丑", yue: "未"};
+        pushStar(ky.kui, "天魁", buildVerticalStar("天魁", "type-lucky", ky.kui, false));
+        pushStar(ky.yue, "天鉞", buildVerticalStar("天鉞", "type-lucky", ky.yue, false));
+
+        let zfBranch = branches[(branches.indexOf("辰") + (birthMonth - 1)) % 12];
+        let ybBranch = branches[(branches.indexOf("戌") - (birthMonth - 1) + 120) % 12];
+        pushStar(zfBranch, "左輔", buildVerticalStar("左輔", "type-lucky", zfBranch, false));
+        pushStar(ybBranch, "右弼", buildVerticalStar("右弼", "type-lucky", ybBranch, false));
+
+        let wcPos = branches[(branches.indexOf("戌") - hourOrders.indexOf(hourBranch) + 120) % 12];
+        pushStar(wcPos, "文昌", buildVerticalStar("文昌", "type-lucky", wcPos, false));
+
+        let wqPos = branches[(branches.indexOf("辰") + hourOrders.indexOf(hourBranch) + 120) % 12];
+        pushStar(wqPos, "文曲", buildVerticalStar("文曲", "type-lucky", wqPos, false));
+
+        let fbhMap = {};
+        if(["寅", "午", "戌"].includes(yearBranch)) fbhMap = {huo: "丑", ling: "卯", ma: "申", xian: "辰"};
+        else if(["巳", "酉", "丑"].includes(yearBranch)) fbhMap = {huo: "卯", ling: "戌", ma: "亥", xian: "未"};
+        else if(["申", "子", "辰"].includes(yearBranch)) fbhMap = {huo: "寅", ling: "戌", ma: "寅", xian: "戌"};
+        else if(["亥", "卯", "未"].includes(yearBranch)) fbhMap = {huo: "酉", ling: "戌", ma: "巳", xian: "丑"};
+        
+        if(fbhMap.huo) pushStar(fbhMap.huo, "火星", buildVerticalStar("火星", "type-malefic", fbhMap.huo, false));
+        if(fbhMap.ling) pushStar(fbhMap.ling, "鈴星", buildVerticalStar("鈴星", "type-malefic", fbhMap.ling, false));
+
+        let djPos = branches[(branches.indexOf("亥") + hourOrders.indexOf(hourBranch) + 120) % 12];
+        pushStar(djPos, "地劫", buildVerticalStar("地劫", "type-minor", djPos, false));
+
+        let tkPos = branches[(branches.indexOf("亥") - hourOrders.indexOf(hourBranch) + 120) % 12];
+        pushStar(tkPos, "天空", buildVerticalStar("天空", "type-minor", tkPos, false));
+
+        if(fbhMap.ma) pushStar(fbhMap.ma, "天馬", buildVerticalStar("天馬", "type-minor", fbhMap.ma, false));
+
+        let tfPos = branches[(branches.indexOf("午") + hourOrders.indexOf(hourBranch) + 120) % 12];
+        let fgPos = branches[(branches.indexOf("寅") + hourOrders.indexOf(hourBranch) + 120) % 12];
+        pushStar(tfPos, "台輔", buildVerticalStar("台輔", "type-minor", tfPos, false));
+        pushStar(fgPos, "封誥", buildVerticalStar("封誥", "type-minor", fgPos, false));
+
+        let egPos = branches[(branches.indexOf(wcPos) - (birthDay - 1) + 120) % 12];
+        let tgPos = branches[(branches.indexOf(wqPos) + (birthDay - 1) + 120) % 12];
+        pushStar(egPos, "恩光", buildVerticalStar("恩光", "type-minor", egPos, false));
+        pushStar(tgPos, "天貴", buildVerticalStar("天貴", "type-minor", tgPos, false));
+
+        let stPos = branches[(branches.indexOf(zfBranch) + (birthDay - 1) + 120) % 12];
+        let bzPos = branches[(branches.indexOf(ybBranch) - (birthDay - 1) + 120) % 12];
+        pushStar(stPos, "三台", buildVerticalStar("三台", "type-minor", stPos, false));
+        pushStar(bzPos, "八座", buildVerticalStar("八座", "type-minor", bzPos, false));
+
+        let servantBranch = branches[(mingIdx - 7 + 12) % 12];
+        let healthBranch = branches[(mingIdx - 5 + 12) % 12];
+        pushStar(servantBranch, "天傷", buildVerticalStar("天傷", "type-minor", servantBranch, false));
+        pushStar(healthBranch, "天使", buildVerticalStar("天使", "type-minor", healthBranch, false));
+
+        let hlIdx = (branches.indexOf("卯") - yearBranchIdx + 120) % 12;
+        let hlBranch = branches[hlIdx];
+        let txBranch = branches[(hlIdx + 6) % 12];
+        pushStar(hlBranch, "紅鸞", buildVerticalStar("紅鸞", "type-minor", hlBranch, false));
+        pushStar(txBranch, "天喜", buildVerticalStar("天喜", "type-minor", txBranch, false));
+
+        let tkuIdx = (branches.indexOf("午") - yearBranchIdx + 120) % 12;
+        let txuIdx = (branches.indexOf("午") + yearBranchIdx) % 12;
+        pushStar(branches[tkuIdx], "天哭", buildVerticalStar("天哭", "type-minor", branches[tkuIdx], false));
+        pushStar(branches[txuIdx], "天虛", buildVerticalStar("天虛", "type-minor", branches[txuIdx], false));
+
+        let lcIdx = (branches.indexOf("辰") + yearBranchIdx) % 12;
+        let fgIdx2 = (branches.indexOf("戌") - yearBranchIdx + 120) % 12;
+        pushStar(branches[lcIdx], "龍池", buildVerticalStar("龍池", "type-minor", branches[lcIdx], false));
+        pushStar(branches[fgIdx2], "鳳閣", buildVerticalStar("鳳閣", "type-minor", branches[fgIdx2], false));
+        pushStar(branches[fgIdx2], "解神", buildVerticalStar("解神", "type-minor", branches[fgIdx2], false));
+
+        let tcaiIdx = (mingIdx + yearBranchIdx) % 12;
+        let tsIdx = (shenIdx + yearBranchIdx) % 12;
+        pushStar(branches[tcaiIdx], "天才", buildVerticalStar("天才", "type-minor", branches[tcaiIdx], false));
+        pushStar(branches[tsIdx], "天壽", buildVerticalStar("天壽", "type-minor", branches[tsIdx], false));
+
+        const feiLianMap = {"子":"申", "丑":"酉", "寅":"戌", "卯":"巳", "辰":"午", "巳":"未", "午":"寅", "未":"卯", "申":"辰", "酉":"亥", "戌":"子", "亥":"丑"};
+        const poSuiMap = {"子":"巳", "午":"巳", "卯":"巳", "酉":"巳", "寅":"酉", "申":"酉", "巳":"酉", "亥":"酉", "辰":"丑", "戌":"丑", "丑":"丑", "未":"丑"};
+        let flBranch = feiLianMap[yearBranch];
+        let psBranch = poSuiMap[yearBranch];
+        if(flBranch) pushStar(flBranch, "蜚廉", buildVerticalStar("蜚廉", "type-minor", flBranch, false));
+        if(psBranch) pushStar(psBranch, "破碎", buildVerticalStar("破碎", "type-minor", psBranch, false));
+
+        let tXingIdx = (branches.indexOf("酉") + (birthMonth - 1)) % 12;
+        let tYaoIdx = (branches.indexOf("丑") + (birthMonth - 1)) % 12;
+        pushStar(branches[tXingIdx], "天刑", buildVerticalStar("天刑", "type-minor", branches[tXingIdx], false));
+        pushStar(branches[tYaoIdx], "天姚", buildVerticalStar("天姚", "type-minor", branches[tYaoIdx], false));
+
+        let m = ((birthMonth - 1) % 12) + 1;
+        if([1, 2, 3].includes(m)) { pushStar("巳", "孤辰", buildVerticalStar("孤辰", "type-minor", "巳", false)); pushStar("丑", "寡宿", buildVerticalStar("寡宿", "type-minor", "丑", false)); }
+        else if([4, 5, 6].includes(m)) { pushStar("申", "孤辰", buildVerticalStar("孤辰", "type-minor", "申", false)); pushStar("辰", "寡宿", buildVerticalStar("寡宿", "type-minor", "辰", false)); }
+        else if([7, 8, 9].includes(m)) { pushStar("亥", "孤辰", buildVerticalStar("孤辰", "type-minor", "亥", false)); pushStar("未", "寡宿", buildVerticalStar("寡宿", "type-minor", "未", false)); }
+        else if([10, 11, 12].includes(m)) { pushStar("寅", "孤辰", buildVerticalStar("孤辰", "type-minor", "寅", false)); pushStar("戌", "寡宿", buildVerticalStar("寡宿", "type-minor", "戌", false)); }
+
+        let ysPos = "";
+        if([1, 7].includes(m)) ysPos = "寅";
+        else if([2, 8].includes(m)) ysPos = "子";
+        else if([3, 9].includes(m)) ysPos = "戌";
+        else if([4, 10].includes(m)) ysPos = "申";
+        else if([5, 11].includes(m)) ysPos = "午";
+        else if([6, 12].includes(m)) ysPos = "辰";
+        if(ysPos) pushStar(ysPos, "陰煞", buildVerticalStar("陰煞", "type-minor", ysPos, false));
+
+        let mb = monthBranchesMap[m] || "亥";
+        let twPos = "";
+        if(["寅", "午", "戌"].includes(mb)) twPos = "巳";
+        else if(["申", "子", "辰"].includes(mb)) twPos = "寅";
+        else if(["巳", "酉", "丑"].includes(mb)) twPos = "亥";
+        else if(["亥", "卯", "未"].includes(mb)) twPos = "申";
+        if(twPos) pushStar(twPos, "天巫", buildVerticalStar("天巫", "type-minor", twPos, false));
+
+        const tyMap = {1:"戌", 2:"巳", 3:"辰", 4:"寅", 5:"未", 6:"卯", 7:"亥", 8:"未", 9:"寅", 10:"午", 11:"戌", 12:"寅"};
+        if(tyMap[m]) pushStar(tyMap[m], "天月", buildVerticalStar("天月", "type-minor", tyMap[m], false));
+
+        const tGuanMap = {"甲": "未", "乙": "辰", "丙": "巳", "丁": "寅", "戊": "卯", "己": "酉", "庚": "亥", "辛": "酉", "壬": "戌", "癸": "午"};
+        const tFuMap = {"甲": "酉", "乙": "申", "丙": "子", "丁": "亥", "戊": "卯", "己": "寅", "庚": "午", "辛": "巳", "壬": "午", "癸": "巳"};
+        const tChuMap = {"甲": "巳", "乙": "午", "丙": "子", "丁": "巳", "戊": "未", "己": "申", "庚": "寅", "辛": "午", "壬": "酉", "癸": "亥"};
+        if(tGuanMap[yearStem]) pushStar(tGuanMap[yearStem], "天官", buildVerticalStar("天官", "type-minor", tGuanMap[yearStem], false));
+        if(tFuMap[yearStem]) pushStar(tFuMap[yearStem], "天福", buildVerticalStar("天福", "type-minor", tFuMap[yearStem], false));
+        if(tChuMap[yearStem]) pushStar(tChuMap[yearStem], "天廚", buildVerticalStar("天廚", "type-minor", tChuMap[yearStem], false));
+
+        const kongMap = {
+            "甲": ["申", "酉"], "己": ["申", "酉"], "乙": ["午", "未"], "庚": ["午", "未"],
+            "丙": ["辰", "巳"], "辛": ["辰", "巳"], "丁": ["寅", "卯"], "壬": ["寅", "卯"], "戊": ["子", "丑"], "癸": ["子", "丑"]
+        };
+        let [b1, b2] = kongMap[yearStem] || ["", ""];
+        [b1, b2].forEach(b => {
+            if (b) {
+                let label = ["寅", "辰", "午", "申", "戌", "子"].includes(b) ? "截空" : "截亡";
+                pushStar(b, label, buildVerticalStar(label, "type-minor", b, false));
+            }
+        });
+
+        if (viewMode === 'annual') {
+            const jiangqians = ["將星", "攀鞍", "歲驛", "息神", "華蓋", "劫煞", "災煞", "天煞", "指背", "咸池", "月煞", "亡神"];
+            let jqStart = "午";
+            if (["寅", "午", "戌"].includes(lnBranch)) jqStart = "午";
+            else if (["申", "子", "辰"].includes(lnBranch)) jqStart = "子";
+            else if (["巳", "酉", "丑"].includes(lnBranch)) jqStart = "酉";
+            else if (["亥", "卯", "未"].includes(lnBranch)) jqStart = "卯";
+
+            let jqIdx = standardBranches.indexOf(jqStart);
+            for(let i=0; i<12; i++) {
+                let b = standardBranches[(jqIdx + i) % 12];
+                pushStar(b, jiangqians[i], buildVerticalStar(jiangqians[i], "type-annual", b, true), true);
+            }
+
+            const suiqians = ["太歲", "晦氣", "喪門", "貫索", "官符", "小耗", "大耗", "龍德", "白虎", "天德", "吊客", "病符"];
+            let sqIdx = standardBranches.indexOf(lnBranch);
+            for(let i=0; i<12; i++) {
+                let b = standardBranches[(sqIdx + i) % 12];
+                pushStar(b, suiqians[i], buildVerticalStar(suiqians[i], "type-annual", b, true), true);
+            }
+
+            pushStar(liuLuBranch, "流祿存", buildVerticalStar("流祿", "type-annual", liuLuBranch, true), true);
+            pushStar(liuQyBranch, "流擎羊", buildVerticalStar("流羊", "type-annual-malefic", liuQyBranch, true), true);
+            pushStar(liuTlBranch, "流陀羅", buildVerticalStar("流陀", "type-annual-malefic", liuTlBranch, true), true);
+
+            pushStar(liuKy.kui, "流天魁", buildVerticalStar("流魁", "type-annual", liuKy.kui, true), true);
+            pushStar(liuKy.yue, "流天鉞", buildVerticalStar("流鉞", "type-annual", liuKy.yue, true), true);
+
+            let liuMaMap = {"寅":"申", "午":"申", "戌":"申", "巳":"亥", "酉":"亥", "丑":"亥", "申":"寅", "子":"寅", "辰":"寅", "亥":"巳", "卯":"巳", "未":"巳"};
+            let liuMaPos = liuMaMap[lnBranch];
+            if(liuMaPos) pushStar(liuMaPos, "流天馬", buildVerticalStar("流馬", "type-annual", liuMaPos, true), true);
+        }
+
+        const boshiGods = ["博士", "力士", "青龍", "小耗", "將軍", "奏書", "飛簾", "喜神", "病符", "大耗", "伏兵", "官府"];
+        const isYangGenderMale = (isYangStem && isMale) || (!isYangStem && !isMale);
+        const boshiDir = isYangGenderMale ? 1 : -1;
+        for (let i = 0; i < 12; i++) {
+            let b = branches[(luIdxNum + (i * boshiDir) + 120) % 12];
+            if (branches.includes(b)) chart[b].boshi = boshiGods[i];
+        }
+
+        const csGods = ["長生", "沐浴", "冠帶", "臨官", "帝旺", "衰", "病", "死", "墓", "絕", "胎", "養"];
+        let csStartBranch = "申";
+        if (bureauNum === 2 || bureauNum === 5) csStartBranch = "申";
+        else if (bureauNum === 6) csStartBranch = "寅";
+        else if (bureauNum === 4) csStartBranch = "巳";
+        else if (bureauNum === 3) csStartBranch = "亥";
+
+        let csStartIdx = branches.indexOf(csStartBranch);
+        let csDir = isYangGenderMale ? 1 : -1;
+        for (let i = 0; i < 12; i++) {
+            let b = branches[(csStartIdx + (i * csDir) + 120) % 12];
+            if (branches.includes(b)) chart[b].changsheng = csGods[i];
+        }
+
+        let xianBranch = fbhMap.xian || "辰";
+        let xianIdx = branches.indexOf(xianBranch);
+        let xianDir = isMale ? 1 : -1;
+        for (let age = 1; age <= 100; age++) {
+            let currPosIdx = (xianIdx + (age - 1) * xianDir + 1200) % 12;
+            chart[branches[currPosIdx]].xiaoxian.push(age);
+        }
+
+        let startAge = bureauNum;
+        let dxDir = ((isYangStem && isMale) || (!isYangStem && !isMale)) ? 1 : -1;
+        let dxCurrIdx = (mingIdx + dxDir + 120) % 12;
+        
+        for(let i=0; i<12; i++) {
+            let b = branches[dxCurrIdx];
+            let ageS = startAge + (i * 10);
+            let ageE = ageS + 9;
+            chart[b].daxian = `大限: ${ageS}-${ageE}`;
+            dxCurrIdx = (dxCurrIdx + dxDir + 120) % 12;
+        }
+
+        const palaceCoords = {
+            "巳": {r: 1, c: 1}, "午": {r: 1, c: 2}, "未": {r: 1, c: 3}, "申": {r: 1, c: 4},
+            "辰": {r: 2, c: 1},                                     "酉": {r: 2, c: 4},
+            "卯": {r: 3, c: 1},                                     "戌": {r: 3, c: 4},
+            "寅": {r: 4, c: 1}, "丑": {r: 4, c: 2}, "子": {r: 4, c: 3}, "亥": {r: 4, c: 4}
+        };
+
+        let tigerStem = tigerStemMap[yearStem] || "丙";
+        let tigerStemIdx = stems.indexOf(tigerStem);
+        const branchOrderForGan = ["寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子", "丑"];
+
+        let modeTitle = (viewMode === 'annual') ? `【流年盤：${lnYear} ${lnStem}${lnBranch}年】` : `【本命盤】`;
+        
+        let html = `
+            <div class="chart-toolbar">
+                <div class="btn-action-group">
+                    <button type="button" class="btn-action btn-back" onclick="backToForm()">← 返回修改資料</button>
+                </div>
+                <h2>排盤結果展示 ${modeTitle}</h2>
+                <div class="btn-action-group">
+                    <button type="button" class="btn-action btn-print" onclick="printChart()">🖨️ 列印命書 (雙面)</button>
+                </div>
+            </div>
+            
+            <div class="a4-sheet">
+                <div class="grid-chart">
+        `;
+        
+        branches.forEach(b => {
+            let coord = palaceCoords[b];
+            let row1Html = chart[b].row1.join('');
+            let row2Html = chart[b].row2.join('');
+            let row3Html = (viewMode === 'annual') ? chart[b].row3.join('') : '';
+            let daxianTag = chart[b].daxian;
+            let boshiTag = chart[b].boshi ? `<span class="god-v-badge boshi-badge">${chart[b].boshi}</span>` : '';
+            let changshengTag = chart[b].changsheng ? `<span class="god-v-badge changsheng-badge">${chart[b].changsheng}</span>` : '';
+            
+            let xiaoxianArr = chart[b].xiaoxian;
+            let xiaoxianLines = [];
+            for (let i = 0; i < xiaoxianArr.length; i += 4) {
+                xiaoxianLines.push(xiaoxianArr.slice(i, i + 4).join(', '));
+            }
+            let xiaoxianFormatted = xiaoxianLines.join('<br>');
+            
+            let liunianTag = (b === lnBranch && viewMode === 'annual') ? `<div class="tag-liunian">小限命</div>` : "";
+            
+            let currBIdx = branches.indexOf(b);
+            let palaceOffset = (mingIdx - currBIdx + 12) % 12;
+            let palaceName = twelvePalaceNames[palaceOffset];
+
+            let isMingClass = (b === mingBranch) ? "is-ming" : "normal";
+            let isShenBadge = (b === shenBranch) ? `<span class="badge-shen">身</span>` : "";
+            
+            let bIdx = branchOrderForGan.indexOf(b);
+            let pStem = stems[(tigerStemIdx + bIdx) % 10];
+            let palaceGanZhi = pStem + b;
+
+            let annualRowHtml = row3Html ? `<div class="annual-stars-row">${row3Html}</div>` : '';
+
+            html += `
+                <div class="palace-card" style="grid-row: ${coord.r}; grid-column: ${coord.c};">
+                    <div class="palace-left-col">
+                        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <div class="palace-stem-vertical">
+                                <span>${palaceGanZhi}</span>
+                                ${isShenBadge}
+                            </div>
+                            ${liunianTag}
+                        </div>
+                        <div class="palace-name-badge ${isMingClass}">
+                            ${palaceName}
+                        </div>
+                    </div>
+                    
+                    <div class="palace-body">
+                        <div class="primary-stars-row">${row1Html || ''}</div>
+                        <div class="secondary-stars-row">${row2Html || ''}</div>
+                        ${annualRowHtml}
+                        
+                        <div class="limit-stack-area">
+                            <div class="xiaoxian-line">${xiaoxianFormatted}</div>
+                            <div class="daxian-line"><span class="tag-sihua">${daxianTag}</span></div>
+                        </div>
+
+                        <div class="palace-footer-right-group">
+                            ${boshiTag}
+                            ${changshengTag}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        const todayDate = new Date();
+        const yyyy = todayDate.getFullYear();
+        const mm = String(todayDate.getMonth() + 1).padStart(2, '0');
+        const dd = String(todayDate.getDate()).padStart(2, '0');
+        const todayStr = `${yyyy}.${mm}.${dd}`;
+
+        let cnLunarDate = getChineseLunarString(birthMonth, birthDay);
+
+        let birthLunarYear = parseInt(solarDateStr.split('-')[0]); 
+        try {
+            let parts = solarDateStr.split('-');
+            let y = parseInt(parts[0]), month = parseInt(parts[1]), d = parseInt(parts[2]);
+            let hourNum = parseInt(birthTimeStr.split(":")[0], 10);
+            if (hourNum === 23) {
+                let dt = new Date(y, month - 1, d);
+                dt.setDate(dt.getDate() + 1);
+                y = dt.getFullYear(); month = dt.getMonth() + 1; d = dt.getDate();
+            }
+            let s = Solar.fromYmd(y, month, d);
+            birthLunarYear = s.getLunar().getYear();
+        } catch(e) {}
+
+        let ageHtml = "";
+        if (viewMode === 'annual') {
+            let age = lnYear - birthLunarYear + 1;
+            ageHtml = `<div style="margin-bottom: 2px; color:#b91c1c; font-weight:bold; font-size:16px;">當生小限：${age}歲 (${lnYear}年)</div>`;
+        }
+
+        const zodiacMap = { "子":"鼠", "丑":"牛", "寅":"虎", "卯":"兔", "辰":"龍", "巳":"蛇", "午":"馬", "未":"羊", "申":"猴", "酉":"雞", "戌":"狗", "亥":"豬" };
+        let zodiacStr = zodiacMap[yearBranch] || "";
+
+        html += `
+                    <div class="center-box">
+                        <img src="${LOGO_BASE64}" alt="螢火紫微浮水印" class="center-watermark-bg">
+
+                        <h3>✨ ${userName} 命盤 ✨</h3>
+                        <div style="margin-bottom: 2px;"><b>陽曆：</b>${solarDateStr} ${birthTimeStr} (${hourBranch}時)</div>
+                        <div style="margin-bottom: 2px;"><b>農曆：</b>${yearStem}${yearBranch}年 ${cnLunarDate}</div>
+                        <div style="margin-bottom: 2px; color:#b45309; font-weight:bold;">${yinYangGenderStr} | <b>${bureau}</b></div>
+                        <div style="margin-bottom: 2px; color:#0284c7; font-weight:bold;">子年斗君：<b>${doujunBranchCalc}宮</b></div>
+                        <div style="margin-bottom: 2px; color:#701a75; font-size:14px;"><b>命主：</b>${mingZhuStar} | <b>身主：</b>${shenZhuStar}</div>
+                        ${ageHtml}
+                        <div style="font-size: 12px; color: #64748b; border-top: 1px dashed #cbd5e1; margin-top: 4px; padding-top: 4px;">
+                            ${viewMode === 'annual' ? `小限命：${lnYear}年(${lnStem}${lnBranch})<br>` : ''}
+                            排盤日期：${todayStr}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-break"></div>
+            <div class="a4-sheet limit-sheet-page">
+                
+                <div class="limit-header-info">
+                    <div>緣人姓名：<span style="color:#b45309; font-size:20px;">${userName}</span> (${yinYangGenderStr}) 生肖${zodiacStr}</div>
+                    <div style="text-align: right; font-size: 15px; color:#334155;">
+                        <div style="margin-bottom: 4px;">(公曆) ${solarDateStr} ${birthTimeStr}</div>
+                        <div>(農曆) ${yearStem}${yearBranch}年 ${cnLunarDate} ${hourBranch}時</div>
+                    </div>
+                </div>
+
+                <table class="limit-table">
+        `;
+
+        html += `<tr><td class="limit-dec-cell" style="background:#e0f2fe;">命<br>宮</td>`;
+        let yStIdx = stems.indexOf(yearStem);
+        let yBrIdx = standardBranches.indexOf(yearBranch);
+
+        for (let a = 1; a <= 10; a++) {
+            if (a < bureauNum) {
+                let sy = birthLunarYear + a - 1;
+                let sSt = stems[(yStIdx + a - 1) % 10]; 
+                let sBr = standardBranches[(yBrIdx + a - 1) % 12];
+                html += `<td class="limit-yr-cell"><b>${a}</b><br>${sSt}${sBr}<br>${sy}</td>`;
+            } else {
+                html += `<td class="limit-yr-cell"></td>`;
+            }
+        }
+        html += `</tr>`;
+
+        let drawDxIdx = (mingIdx + dxDir + 120) % 12;
+        for (let d = 0; d < 8; d++) {
+            let bName = branches[drawDxIdx];
+            let bIdx = branchOrderForGan.indexOf(bName);
+            let pStem = stems[(tigerStemIdx + bIdx) % 10];
+            
+            html += `<tr><td class="limit-dec-cell">${pStem}${bName}<br>大限</td>`;
+            let ageStart = bureauNum + (d * 10);
+            for (let step = 0; step < 10; step++) {
+                let a = ageStart + step;
+                let sy = birthLunarYear + a - 1;
+                let sSt = stems[(yStIdx + a - 1) % 10]; 
+                let sBr = standardBranches[(yBrIdx + a - 1) % 12];
+                html += `<td class="limit-yr-cell"><b>${a}</b><br>${sSt}${sBr}<br>${sy}</td>`;
+            }
+            html += `</tr>`;
+            drawDxIdx = (drawDxIdx + dxDir + 120) % 12;
+        }
+        html += `</table>`;
+
+        html += `<div class="limit-sihua-grid">`;
+        
+        let bStars = Object.keys(sihuaMap[yearStem]);
+        let bJiStar = bStars[3];
+        let bJiBranch = starPosMap[bJiStar] || "子";
+        let bJiPalace = twelvePalaceNames[(mingIdx - branches.indexOf(bJiBranch) + 12) % 12];
+        
+        html += `
+            <div class="limit-sihua-item" style="grid-column: 1 / -1; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px;">
+                <span class="limit-sihua-label" style="color:#b91c1c;">當 生：</span>
+                <span class="limit-sihua-content">(${yearStem}) ${shortStar[bStars[0]]}、${shortStar[bStars[1]]}、${shortStar[bStars[2]]}、${shortStar[bStars[3]]} <span class="limit-sihua-target">(${bJiPalace}宮)</span></span>
+            </div>
+        `;
+
+        for(let i=0; i<12; i++) {
+            let currBIdx = (mingIdx - i + 12) % 12;
+            let bName = branches[currBIdx];
+            let pName = twelvePalaceNames[i];
+            
+            let bIdx = branchOrderForGan.indexOf(bName);
+            let pStem = stems[(tigerStemIdx + bIdx) % 10];
+            
+            let pStars = Object.keys(sihuaMap[pStem]);
+            let pJiStar = pStars[3];
+            let jiBIdx = starPosMap[pJiStar] ? branches.indexOf(starPosMap[pJiStar]) : 0;
+            let pJiPalace = twelvePalaceNames[(mingIdx - jiBIdx + 12) % 12];
+            
+            html += `
+                <div class="limit-sihua-item">
+                    <span class="limit-sihua-label">${pName}：</span>
+                    <span class="limit-sihua-content">(${pStem}) ${shortStar[pStars[0]]}、${shortStar[pStars[1]]}、${shortStar[pStars[2]]}、${shortStar[pStars[3]]} <span class="limit-sihua-target">(${pJiPalace}宮)</span></span>
+                </div>
+            `;
+        }
+
+        html += `
+                </div>
+                <div style="margin-top: 16px; text-align: center; color: #64748b; font-size: 13px;">
+                    ※ 本命盤由 螢火紫微 引擎精密推算生成
+                </div>
+            </div>
+        `;
+
+        document.getElementById('resultContainer').innerHTML = html;
+    } catch (err) {
+        console.error(err);
+        document.getElementById('resultContainer').innerHTML = `<p style="color:red; font-weight:bold;">⚠️ 排盤計算發生錯誤: ${err.message}</p>`;
+    }
+}
+</script>
+
+</body>
+</html>
