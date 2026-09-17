@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>螢火紫微 - 專業命盤引擎</title>
+    <title>螢火紫微 - 專業琉璃命盤引擎</title>
     <style>
         :root {
             --bg-glass: rgba(255, 255, 255, 0.7);
@@ -33,7 +33,7 @@
             max-width: 1400px; 
             margin: 0 auto; 
             background: var(--bg-glass); 
-            padding: 16px; 
+            padding: 20px; 
             border-radius: 16px; 
             border: 1px solid rgba(255, 255, 255, 0.9);
             box-shadow: 0 12px 30px rgba(15, 35, 58, 0.1);
@@ -44,7 +44,7 @@
             align-items: center;
             justify-content: center;
             gap: 16px;
-            margin-bottom: 14px;
+            margin-bottom: 20px;
         }
 
         .brand-logo-img {
@@ -88,11 +88,11 @@
 
         .form-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-            gap: 10px; 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 14px; 
             margin-bottom: 16px; 
             background: rgba(255, 255, 255, 0.6); 
-            padding: 12px 16px; 
+            padding: 16px 20px; 
             border-radius: 12px; 
             border: 1px solid rgba(255, 255, 255, 0.9); 
         }
@@ -100,14 +100,14 @@
         .form-group label { 
             display: block; 
             font-weight: bold; 
-            margin-bottom: 3px; 
+            margin-bottom: 5px; 
             font-size: 15px; 
             color: #1e3a5f; 
         }
 
         .form-group select, .form-group input { 
             width: 100%; 
-            padding: 7px 10px; 
+            padding: 9px 12px; 
             border: 1px solid rgba(148, 163, 184, 0.4); 
             border-radius: 6px; 
             font-size: 16px; 
@@ -128,13 +128,13 @@
         .convert-box { 
             grid-column: 1 / -1; 
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(224, 242, 254, 0.8) 100%); 
-            padding: 12px 16px; 
+            padding: 14px 18px; 
             border-radius: 10px; 
             border: 1px solid rgba(125, 211, 252, 0.6); 
         }
 
         .convert-box h3 { 
-            margin: 0 0 6px 0; 
+            margin: 0 0 8px 0; 
             font-size: 17px; 
             color: #0369a1; 
         }
@@ -142,7 +142,7 @@
         .lunar-info { 
             font-size: 15px; 
             color: #0284c7; 
-            margin-top: 4px; 
+            margin-top: 6px; 
             font-weight: bold; 
         }
 
@@ -159,6 +159,7 @@
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
             letter-spacing: 2px;
+            margin-top: 10px;
         }
 
         .btn-submit:hover { filter: brightness(1.08); }
@@ -711,12 +712,12 @@
     
     <div class="form-section" id="formSection">
         <div class="form-grid">
-            <div class="form-group" style="grid-column: 1 / -1; background: rgba(255, 255, 255, 0.65); padding: 10px 14px; border-radius: 10px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; border: 1px solid rgba(255, 255, 255, 0.9);">
-                <div style="flex: 2; min-width: 180px;">
+            <div class="form-group" style="grid-column: 1 / -1; background: rgba(255, 255, 255, 0.65); padding: 12px 16px; border-radius: 10px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; border: 1px solid rgba(255, 255, 255, 0.9);">
+                <div style="flex: 2; min-width: 200px;">
                     <label style="color: #0f233a;">👤 命主姓名</label>
                     <input type="text" id="userName" placeholder="請填寫姓名" style="font-weight: bold; color: #b45309;">
                 </div>
-                <div style="flex: 1; min-width: 170px;">
+                <div style="flex: 1; min-width: 180px;">
                     <label style="color: #0f233a;">🔭 盤面模式選擇</label>
                     <select id="viewMode" style="font-weight: bold; color: #0284c7;">
                         <option value="natal">本命盤（生年四化）</option>
@@ -727,16 +728,16 @@
 
             <div class="convert-box">
                 <h3>📅 出生時間與推算設定</h3>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <div style="flex: 2; min-width: 160px;">
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <div style="flex: 2; min-width: 180px;">
                         <label>西曆出生日期 <span style="color:red">*</span></label>
                         <input type="date" id="solarDate" onchange="autoCalculateAll(false)">
                     </div>
-                    <div style="flex: 1.2; min-width: 120px;">
+                    <div style="flex: 1.2; min-width: 130px;">
                         <label>出生時間 <span style="color:red">*</span></label>
                         <input type="time" id="birthTime" onchange="onTimeInputChange()">
                     </div>
-                    <div style="flex: 1.2; min-width: 150px;">
+                    <div style="flex: 1.2; min-width: 160px;">
                         <label>換算時辰</label>
                         <select id="hourBranch" onchange="autoCalculateAll(false)">
                             <option value="" disabled selected>請選擇/自動換算</option>
@@ -754,7 +755,7 @@
                             <option value="亥">亥時 (21:00-22:59)</option>
                         </select>
                     </div>
-                    <div style="flex: 1; min-width: 120px;">
+                    <div style="flex: 1; min-width: 130px;">
                         <label>查看流年</label>
                         <input type="number" id="liuNianYear" onchange="autoCalculateAll(false)">
                     </div>
@@ -781,61 +782,8 @@
 </div>
 
 <script>
-const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
-  <defs>
-    <radialGradient id="moonGlow" cx="45%" cy="45%" r="55%">
-      <stop offset="0%" stop-color="#fffbeb" stop-opacity="1" />
-      <stop offset="40%" stop-color="#fef08a" stop-opacity="0.9" />
-      <stop offset="80%" stop-color="#f59e0b" stop-opacity="0.75" />
-      <stop offset="100%" stop-color="#d97706" stop-opacity="0" />
-    </radialGradient>
-    <radialGradient id="wingGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
-      <stop offset="40%" stop-color="#a7f3d0" stop-opacity="0.75" />
-      <stop offset="80%" stop-color="#38bdf8" stop-opacity="0.6" />
-      <stop offset="100%" stop-color="#0284c7" stop-opacity="0.1" />
-    </radialGradient>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="6" result="blur" />
-      <feMerge>
-        <feMergeNode in="blur" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
-  </defs>
-  <rect width="500" height="500" fill="#050811" />
-  <g fill="#fef08a" opacity="0.75" filter="url(#glow)">
-    <circle cx="95" cy="120" r="2.5" />
-    <circle cx="75" cy="220" r="3" />
-    <circle cx="120" cy="310" r="2" />
-    <circle cx="140" cy="400" r="2.5" />
-    <circle cx="410" cy="110" r="3" />
-    <circle cx="440" cy="220" r="2.5" />
-    <circle cx="400" cy="320" r="3" />
-    <circle cx="340" cy="420" r="2" />
-    <circle cx="250" cy="65" r="3.5" />
-    <circle cx="280" cy="450" r="2.5" />
-  </g>
-  <path d="M 270,70 A 175,175 0 1 0 395,335 A 148,148 0 1 1 270,70 Z" fill="url(#moonGlow)" filter="url(#glow)" stroke="#fef08a" stroke-width="2.5" />
-  <g filter="url(#glow)" transform="translate(250, 240)">
-    <path d="M 0,-10 C -60,-130 -190,-120 -150,-20 C -120,40 -40,20 0,0 Z" fill="url(#wingGlow)" stroke="#fef08a" stroke-width="2" opacity="0.88" />
-    <path d="M 0,-10 C 60,-130 190,-120 150,-20 C 120,40 40,20 0,0 Z" fill="url(#wingGlow)" stroke="#fef08a" stroke-width="2" opacity="0.88" />
-    <path d="M 0,0 C -50,30 -130,50 -90,110 C -50,140 -20,60 0,15 Z" fill="url(#wingGlow)" stroke="#fef08a" stroke-width="1.8" opacity="0.82" />
-    <path d="M 0,0 C 50,30 130,50 90,110 C 50,140 20,60 0,15 Z" fill="url(#wingGlow)" stroke="#fef08a" stroke-width="1.8" opacity="0.82" />
-    <circle cx="-75" cy="-25" r="26" fill="none" stroke="#fef08a" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.85" />
-    <circle cx="75" cy="-25" r="26" fill="none" stroke="#fef08a" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.85" />
-    <circle cx="-42" cy="45" r="18" fill="none" stroke="#6ee7b7" stroke-width="1.5" opacity="0.8" />
-    <circle cx="42" cy="45" r="18" fill="none" stroke="#6ee7b7" stroke-width="1.5" opacity="0.8" />
-    <ellipse cx="0" cy="5" rx="6" ry="32" fill="#fef08a" />
-    <circle cx="0" cy="-28" r="8" fill="#fef08a" />
-    <path d="M -3,-34 Q -18,-62 -30,-54" fill="none" stroke="#fde047" stroke-width="2" stroke-linecap="round" />
-    <path d="M 3,-34 Q 18,-62 30,-54" fill="none" stroke="#fde047" stroke-width="2" stroke-linecap="round" />
-  </g>
-  <text x="250" y="405" text-anchor="middle" font-family="'DFKai-SB', 'BiauKai', 'KaiTi', serif" font-size="44" font-weight="bold" fill="#ffffff" letter-spacing="8">螢火紫微</text>
-  <text x="250" y="455" text-anchor="middle" font-family="'DFKai-SB', 'BiauKai', 'KaiTi', serif" font-size="22" font-weight="bold" fill="#cbd5e1" letter-spacing="5">命理占星·紫微斗數</text>
-</svg>`;
-
-const LOGO_BASE64 = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(LOGO_SVG);
+// 請將此處替換為你的 GitHub PNG 圖片網址 (例如 https://raw.githubusercontent.com/.../logo.png)
+const LOGO_BASE64 = "https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/main/logo.png";
 
 const branches = ["寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子", "丑"];
 const standardBranches = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
@@ -850,7 +798,7 @@ const twelvePalaceNames = [
 const shortStar = {
     "廉貞": "廉", "破軍": "破", "武曲": "武", "太陽": "陽", "天機": "機",
     "天梁": "梁", "紫微": "紫", "太陰": "陰", "天同": "同", "文昌": "昌",
-    "巨門": "巨", "貪狼": "貪", "右弼": "弼", "文曲": "曲", "左輔": "輔"
+    "巨門": "巨", "貪狼": "貪", "右弼": "弼", "文曲": "曲", "左輔": "輔", "天府": "府"
 };
 
 const luMap = {"甲": "寅", "乙": "卯", "丙": "巳", "丁": "午", "戊": "巳", "己": "午", "庚": "申", "辛": "酉", "壬": "亥", "癸": "子"};
@@ -860,6 +808,7 @@ const kuiYueMap = {
     "庚": {kui: "丑", yue: "未"}, "辛": {kui: "寅", yue: "午"}, "壬": {kui: "卯", yue: "巳"}, "癸": {kui: "卯", yue: "巳"}
 };
 
+// 修正後的精準四化對應（庚年「陽武同陰」、壬年「梁紫府武」）
 const sihuaMap = {
     "甲": { "廉貞": "祿", "破軍": "權", "武曲": "科", "太陽": "忌" },
     "乙": { "天機": "祿", "天梁": "權", "紫微": "科", "太陰": "忌" },
@@ -867,9 +816,9 @@ const sihuaMap = {
     "丁": { "太陰": "祿", "天同": "權", "天機": "科", "巨門": "忌" },
     "戊": { "貪狼": "祿", "太陰": "權", "右弼": "科", "天機": "忌" },
     "己": { "武曲": "祿", "貪狼": "權", "天梁": "科", "文曲": "忌" },
-    "庚": { "太陽": "祿", "武曲": "權", "太陰": "科", "天同": "忌" },
+    "庚": { "太陽": "祿", "武曲": "權", "天同": "科", "太陰": "忌" },
     "辛": { "巨門": "祿", "太陽": "權", "文曲": "科", "文昌": "忌" },
-    "壬": { "天梁": "祿", "紫微": "權", "左輔": "科", "武曲": "忌" },
+    "壬": { "天梁": "祿", "紫微": "權", "天府": "科", "武曲": "忌" },
     "癸": { "破軍": "祿", "巨門": "權", "太陰": "科", "貪狼": "忌" }
 };
 
@@ -880,9 +829,9 @@ const liuNianSihuaMap = {
     "丁": { "太陰": "祿", "天同": "權", "天機": "科", "巨門": "忌" },
     "戊": { "貪狼": "祿", "太陰": "權", "右弼": "科", "天機": "忌" },
     "己": { "武曲": "祿", "貪狼": "權", "天梁": "科", "文曲": "忌" },
-    "庚": { "太陽": "祿", "武曲": "權", "太陰": "科", "天同": "忌" },
+    "庚": { "太陽": "祿", "武曲": "權", "天同": "科", "太陰": "忌" },
     "辛": { "巨門": "祿", "太陽": "權", "文曲": "科", "文昌": "忌" },
-    "壬": { "天梁": "祿", "紫微": "權", "左輔": "科", "武曲": "忌" },
+    "壬": { "天梁": "祿", "紫微": "權", "天府": "科", "武曲": "忌" },
     "癸": { "破軍": "祿", "巨門": "權", "太陰": "科", "貪狼": "忌" }
 };
 
@@ -1483,8 +1432,8 @@ function generateChart() {
 
         const palaceCoords = {
             "巳": {r: 1, c: 1}, "午": {r: 1, c: 2}, "未": {r: 1, c: 3}, "申": {r: 1, c: 4},
-            "辰": {r: 2, c: 1},                                         "酉": {r: 2, c: 4},
-            "卯": {r: 3, c: 1},                                         "戌": {r: 3, c: 4},
+            "辰": {r: 2, c: 1},                                     "酉": {r: 2, c: 4},
+            "卯": {r: 3, c: 1},                                     "戌": {r: 3, c: 4},
             "寅": {r: 4, c: 1}, "丑": {r: 4, c: 2}, "子": {r: 4, c: 3}, "亥": {r: 4, c: 4}
         };
 
