@@ -280,7 +280,7 @@
             margin-top: 2px;
         }
 
-        /* 標籤樣式：拔除流年命，保留小限命與大限命 */
+        /* 標籤樣式：小限命(紫)、大限命(綠) */
         .tag-xiaoxian, .tag-daxian { 
             writing-mode: vertical-rl;
             text-orientation: upright;
@@ -293,8 +293,8 @@
             display: inline-block;
             margin-top: 3px;
         }
-        .tag-xiaoxian { background: #8b5cf6; } /* 小限命：紫色 */
-        .tag-daxian { background: #059669; } /* 大限命：綠色 */
+        .tag-xiaoxian { background: #8b5cf6; } 
+        .tag-daxian { background: #059669; } 
 
         .palace-name-badge {
             writing-mode: vertical-rl;
@@ -333,7 +333,7 @@
             flex-direction: row-reverse;
             justify-content: flex-start;
             gap: 4px;
-            min-height: 90px; /* 縮減高度確保底部空間 */
+            min-height: 100px; 
             padding-bottom: 4px;
             border-bottom: 1px dashed #cbd5e1;
             overflow: hidden;
@@ -348,7 +348,7 @@
             align-content: flex-start;
             flex-wrap: wrap;
             gap: 3px;
-            flex-grow: 1; /* 佔據剩餘空間 */
+            flex-grow: 1;
             padding-top: 4px;
             overflow: hidden;
         }
@@ -358,21 +358,21 @@
             flex-direction: row-reverse;
             justify-content: flex-start;
             flex-wrap: wrap;
-            gap: 3px;
-            padding-top: 2px;
+            gap: 2px;
+            padding-top: 4px;
             border-top: 1px dotted #e2e8f0;
             overflow: hidden;
-            flex-shrink: 0; /* 防止被擠壓 */
+            flex-shrink: 0;
         }
 
-        /* 宮位底座：解決流年星與神煞重疊問題 */
+        /* 將十二神與歲數獨立到底座，絕不與流年星曜重疊 */
         .palace-footer {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
             width: 100%;
-            margin-top: auto; /* 永遠固定在最底部 */
-            padding-top: 2px;
+            margin-top: auto; 
+            padding-top: 4px;
             flex-shrink: 0;
         }
 
@@ -383,12 +383,41 @@
             align-items: flex-start;
         }
 
+        .xiaoxian-line {
+            color: #047857;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 1.2;
+            max-width: 170px;
+            word-break: break-all;
+        }
+
+        .daxian-line {
+            font-size: 13px;
+            font-weight: bold;
+            line-height: 1.1;
+        }
+
         .palace-footer-right-group {
             display: flex;
             flex-direction: row-reverse;
             gap: 2px;
             align-items: flex-end;
         }
+
+        .god-v-badge {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            padding: 2px 1px;
+            border-radius: 3px;
+            line-height: 1;
+        }
+
+        .boshi-badge { color: #0369a1; background: #f0f9ff; border: 1px solid #bae6fd; }
+        .changsheng-badge { color: #166534; background: #f0fdf4; border: 1px solid #bbf7d0; }
 
         .star-v-block {
             writing-mode: vertical-rl;
@@ -438,22 +467,25 @@
         .star-v-block.type-annual {
             background: #f0fdf4;
             color: #166534;
-            font-size: 15px; 
+            font-size: 13px; 
             font-weight: bold; 
             border: 1px dashed #86efac;
+            padding: 1px;
         }
 
         .star-v-block.type-annual-malefic {
             background: #fef2f2;
             color: #dc2626;
-            font-size: 15px; 
+            font-size: 13px; 
             border: 1px dashed #fca5a5;
             font-weight: bold; 
+            padding: 1px;
         }
 
         .natal-miao { color: #047857; font-size: 13px; font-weight: bold; margin-bottom: 2px; display: inline-block; }
         .annual-miao { color: #ea580c; font-size: 13px; font-weight: bold; margin-top: 2px; display: inline-block; }
 
+        /* 四化標籤水平並列 */
         .sihua-group {
             display: flex;
             flex-direction: column;
@@ -473,35 +505,6 @@
         .sihua-birth-char { background: #831843; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); }
         .sihua-daxian-char { background: #059669; box-shadow: 0 1px 2px rgba(5, 150, 105, 0.3); }
         .sihua-annual-char { background: #0284c7; box-shadow: 0 1px 2px rgba(2, 132, 199, 0.3); }
-
-        .xiaoxian-line {
-            color: #047857;
-            font-size: 12px;
-            font-weight: bold;
-            line-height: 1.2;
-            max-width: 170px;
-            word-break: break-all;
-        }
-
-        .daxian-line {
-            font-size: 13px;
-            font-weight: bold;
-            line-height: 1.1;
-        }
-
-        .god-v-badge {
-            writing-mode: vertical-rl;
-            text-orientation: upright;
-            font-size: 11px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            padding: 2px 1px;
-            border-radius: 3px;
-            line-height: 1;
-        }
-
-        .boshi-badge { color: #0369a1; background: #f0f9ff; border: 1px solid #bae6fd; }
-        .changsheng-badge { color: #166534; background: #f0fdf4; border: 1px solid #bbf7d0; }
 
         .center-box {
             grid-row: 2 / span 2;
@@ -790,6 +793,7 @@
 </div>
 
 <script>
+// 請將此處替換為你的 GitHub PNG 圖片網址
 const LOGO_BASE64 = "https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/main/logo.png";
 
 const branches = ["寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子", "丑"];
@@ -815,6 +819,7 @@ const kuiYueMap = {
     "庚": {kui: "丑", yue: "未"}, "辛": {kui: "寅", yue: "午"}, "壬": {kui: "卯", yue: "巳"}, "癸": {kui: "卯", yue: "巳"}
 };
 
+// 修正後的精準四化對應（庚年「陽武同陰」、壬年「梁紫府武」）
 const sihuaMap = {
     "甲": { "廉貞": "祿", "破軍": "權", "武曲": "科", "太陽": "忌" },
     "乙": { "天機": "祿", "天梁": "權", "紫微": "科", "太陰": "忌" },
@@ -1193,7 +1198,6 @@ function generateChart() {
             drawDxIdx = (drawDxIdx + dxDir + 120) % 12;
         }
 
-        // 若年齡小於起運局數，則以本命宮為大限（無調適）
         if (!currentDxBranch) {
             currentDxBranch = mingBranch;
             currentDxStem = stems[mingStemIdx];
@@ -1415,6 +1419,7 @@ function generateChart() {
             }
         });
 
+        // 【重置流年星曜】 - 歲前、將前、流年祿羊陀等
         if (viewMode === 'annual') {
             const jiangqians = ["將星", "攀鞍", "歲驛", "息神", "華蓋", "劫煞", "災煞", "天煞", "指背", "咸池", "月煞", "亡神"];
             let jqStart = "午";
@@ -1433,19 +1438,22 @@ function generateChart() {
             let sqIdx = standardBranches.indexOf(lnBranch);
             for(let i=0; i<12; i++) {
                 let b = standardBranches[(sqIdx + i) % 12];
-                pushStar(b, suiqians[i], buildVerticalStar(suiqians[i], "type-annual", b, true), true);
+                // 依照要求：不顯示太歲星
+                if (suiqians[i] !== "太歲") {
+                    pushStar(b, suiqians[i], buildVerticalStar(suiqians[i], "type-annual", b, true), true);
+                }
             }
 
-            pushStar(liuLuBranch, "流祿存", buildVerticalStar("流祿", "type-annual", liuLuBranch, true), true);
-            pushStar(liuQyBranch, "流擎羊", buildVerticalStar("流羊", "type-annual-malefic", liuQyBranch, true), true);
-            pushStar(liuTlBranch, "流陀羅", buildVerticalStar("流陀", "type-annual-malefic", liuTlBranch, true), true);
+            pushStar(liuLuBranch, "流祿", buildVerticalStar("流祿", "type-annual", liuLuBranch, true), true);
+            pushStar(liuQyBranch, "流羊", buildVerticalStar("流羊", "type-annual-malefic", liuQyBranch, true), true);
+            pushStar(liuTlBranch, "流陀", buildVerticalStar("流陀", "type-annual-malefic", liuTlBranch, true), true);
 
-            pushStar(liuKy.kui, "流天魁", buildVerticalStar("流魁", "type-annual", liuKy.kui, true), true);
-            pushStar(liuKy.yue, "流天鉞", buildVerticalStar("流鉞", "type-annual", liuKy.yue, true), true);
+            pushStar(liuKy.kui, "流魁", buildVerticalStar("流魁", "type-annual", liuKy.kui, true), true);
+            pushStar(liuKy.yue, "流鉞", buildVerticalStar("流鉞", "type-annual", liuKy.yue, true), true);
 
             let liuMaMap = {"寅":"申", "午":"申", "戌":"申", "巳":"亥", "酉":"亥", "丑":"亥", "申":"寅", "子":"寅", "辰":"寅", "亥":"巳", "卯":"巳", "未":"巳"};
             let liuMaPos = liuMaMap[lnBranch];
-            if(liuMaPos) pushStar(liuMaPos, "流天馬", buildVerticalStar("流馬", "type-annual", liuMaPos, true), true);
+            if(liuMaPos) pushStar(liuMaPos, "流馬", buildVerticalStar("流馬", "type-annual", liuMaPos, true), true);
         }
 
         const boshiGods = ["博士", "力士", "青龍", "小耗", "將軍", "奏書", "飛簾", "喜神", "病符", "大耗", "伏兵", "官府"];
@@ -1510,7 +1518,6 @@ function generateChart() {
             }
             let xiaoxianFormatted = xiaoxianLines.join('<br>');
             
-            // 標籤顯示控制 (拔除太歲，保留小限、大限)
             let xiaoxianTag = (b === currentXxBranch && viewMode === 'annual') ? `<div class="tag-xiaoxian">小限命</div>` : "";
             let daxianHighlightTag = (b === currentDxBranch && viewMode === 'annual') ? `<div class="tag-daxian">大限命</div>` : "";
             
@@ -1535,7 +1542,7 @@ function generateChart() {
                                 <span>${palaceGanZhi}</span>
                                 ${isShenBadge}
                             </div>
-                            <!-- 小限命與大限命標籤垂直堆疊 -->
+                            <!-- 小限命與大限命垂直堆疊 -->
                             ${xiaoxianTag}
                             ${daxianHighlightTag}
                         </div>
@@ -1549,7 +1556,7 @@ function generateChart() {
                         <div class="secondary-stars-row">${row2Html || ''}</div>
                         ${annualRowHtml}
                         
-                        <!-- 宮位底座：解決重疊問題 -->
+                        <!-- 獨立到底座的歲數與神煞區，不再與流年星曜打架 -->
                         <div class="palace-footer">
                             <div class="limit-stack-area">
                                 <div class="xiaoxian-line">${xiaoxianFormatted}</div>
