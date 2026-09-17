@@ -280,10 +280,10 @@
             margin-top: 2px;
         }
 
-        .tag-liunian { 
+        /* 小限命與大限命標籤樣式 */
+        .tag-xiaoxian, .tag-daxian { 
             writing-mode: vertical-rl;
             text-orientation: upright;
-            background: #0284c7; 
             color: #fff; 
             font-weight: bold; 
             font-size: 13px; 
@@ -291,21 +291,10 @@
             border-radius: 4px; 
             letter-spacing: 1px;
             display: inline-block;
+            margin-top: 3px;
         }
-
-        /* 大限標籤樣式 */
-        .tag-daxian { 
-            writing-mode: vertical-rl;
-            text-orientation: upright;
-            background: #059669; 
-            color: #fff; 
-            font-weight: bold; 
-            font-size: 13px; 
-            padding: 4px 2px; 
-            border-radius: 4px; 
-            letter-spacing: 1px;
-            display: inline-block;
-        }
+        .tag-xiaoxian { background: #8b5cf6; } /* 小限命：紫色 */
+        .tag-daxian { background: #059669; } /* 大限命：綠色 */
 
         .palace-name-badge {
             writing-mode: vertical-rl;
@@ -439,45 +428,26 @@
         .natal-miao { color: #047857; font-size: 13px; font-weight: bold; margin-bottom: 2px; display: inline-block; }
         .annual-miao { color: #ea580c; font-size: 13px; font-weight: bold; margin-top: 2px; display: inline-block; }
 
-        .sihua-birth-char {
-            display: inline-block;
-            background: #831843;
-            color: #fdf2f8;
-            border-radius: 2px;
-            font-weight: normal;
-            font-size: 13px;
-            margin-top: 2px; 
-            padding: 1px 2px;
-            line-height: 1;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        /* 四化標籤排版：改為水平並列 (透過 flex-direction: column 在 vertical-rl 模式下實現水平排列) */
+        .sihua-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-top: 3px;
         }
 
-        .sihua-annual-char {
+        .sihua-birth-char, .sihua-daxian-char, .sihua-annual-char {
             display: inline-block;
-            background: #0284c7;
             color: #ffffff;
             border-radius: 2px;
-            font-weight: normal;
-            font-size: 13px;
-            margin-top: 2px; 
-            padding: 1px 2px;
+            font-weight: bold;
+            font-size: 12px;
+            padding: 2px 2px;
             line-height: 1;
-            box-shadow: 0 1px 2px rgba(2, 132, 199, 0.3);
         }
-
-        /* 大限四化樣式 */
-        .sihua-daxian-char {
-            display: inline-block;
-            background: #059669;
-            color: #ffffff;
-            border-radius: 2px;
-            font-weight: normal;
-            font-size: 13px;
-            margin-top: 2px; 
-            padding: 1px 2px;
-            line-height: 1;
-            box-shadow: 0 1px 2px rgba(5, 150, 105, 0.3);
-        }
+        .sihua-birth-char { background: #831843; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); }
+        .sihua-daxian-char { background: #059669; box-shadow: 0 1px 2px rgba(5, 150, 105, 0.3); }
+        .sihua-annual-char { background: #0284c7; box-shadow: 0 1px 2px rgba(2, 132, 199, 0.3); }
 
         .limit-stack-area {
             margin-top: 3px;
@@ -715,9 +685,12 @@
             .star-v-block.type-lucky, .star-v-block.type-malefic { font-size: 14px !important; }
             .star-v-block.type-minor, .star-v-block.type-annual, .star-v-block.type-annual-malefic { font-size: 13px !important; }
             .star-miao-char { font-size: 11px !important; }
-            .sihua-birth-char, .sihua-annual-char { font-size: 12px !important; padding: 1px 2px !important; margin-top: 2px !important; }
-            .tag-liunian, .tag-daxian { font-size: 12px !important; padding: 2px !important; }
-            .sihua-daxian-char { font-size: 12px !important; padding: 1px 2px !important; margin-top: 2px !important; }
+            
+            /* 列印模式四化標籤調整 */
+            .sihua-group { gap: 1px !important; margin-top: 2px !important; }
+            .sihua-birth-char, .sihua-daxian-char, .sihua-annual-char { font-size: 11px !important; padding: 1px 1px !important; }
+
+            .tag-xiaoxian, .tag-daxian { font-size: 11px !important; padding: 2px !important; margin-top: 2px !important; }
             .xiaoxian-line, .daxian-line { font-size: 11px !important; }
             .god-v-badge { font-size: 10px !important; }
             .center-box { font-size: 14px !important; }
@@ -811,7 +784,6 @@
 </div>
 
 <script>
-// 請將此處替換為你的 GitHub PNG 圖片網址 (例如 https://raw.githubusercontent.com/.../logo.png)
 const LOGO_BASE64 = "https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/main/logo.png";
 
 const branches = ["寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子", "丑"];
@@ -837,7 +809,7 @@ const kuiYueMap = {
     "庚": {kui: "丑", yue: "未"}, "辛": {kui: "寅", yue: "午"}, "壬": {kui: "卯", yue: "巳"}, "癸": {kui: "卯", yue: "巳"}
 };
 
-// 修正後的精準四化對應（庚年「陽武同陰」、壬年「梁紫府武」）
+// 修正後的精準四化對應
 const sihuaMap = {
     "甲": { "廉貞": "祿", "破軍": "權", "武曲": "科", "太陽": "忌" },
     "乙": { "天機": "祿", "天梁": "權", "紫微": "科", "太陰": "忌" },
@@ -1159,7 +1131,7 @@ function generateChart() {
 
         let starPosMap = {};
 
-        // 大限與年齡計算移至前方
+        // 【大限與小限年齡計算】
         let bureauNum = 3;
         if (bureau.includes("水")) bureauNum = 2;
         else if (bureau.includes("木")) bureauNum = 3;
@@ -1183,39 +1155,66 @@ function generateChart() {
 
         let age = lnYear - birthLunarYear + 1;
 
+        // 【大限計算：命宮無大限概念】 - 從命宮的下一個宮位開始起算 1st 大限
         let startAge = bureauNum;
         let dxDir = ((isYangStem && isMale) || (!isYangStem && !isMale)) ? 1 : -1;
-        let dxCurrIdx = (mingIdx + dxDir + 120) % 12;
+        let drawDxIdx = (mingIdx + dxDir + 120) % 12; // 1st 大限從命宮下一格開始
+        
         let tigerStemIdx = stems.indexOf(tigerStemMap[yearStem] || "丙");
         const branchOrderForGan = ["寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子", "丑"];
 
         let currentDxBranch = "";
         let currentDxStem = "";
 
-        for(let i=0; i<12; i++) {
-            let b = branches[dxCurrIdx];
-            let ageS = startAge + (i * 10);
+        // 命宮干支索引 (用於計算大限連續天干)
+        let mingBranchIdx = branchOrderForGan.indexOf(mingBranch);
+        let mingStemIdx = (tigerStemIdx + mingBranchIdx) % 10;
+
+        for(let d = 1; d <= 12; d++) {
+            let bName = branches[drawDxIdx];
+            let ageS = startAge + ((d - 1) * 10);
             let ageE = ageS + 9;
-            chart[b].daxian = `大限: ${ageS}-${ageE}`;
+            chart[bName].daxian = `大限: ${ageS}-${ageE}`;
             
+            // 【大限干調適】 - 從命宮干支嚴格連續順/逆推
+            let daxianStemIdx = (mingStemIdx + d * dxDir + 100) % 10;
+            let pStem = stems[daxianStemIdx];
+
             if (age >= ageS && age <= ageE) {
-                currentDxBranch = b;
-                let bIdx = branchOrderForGan.indexOf(b);
-                currentDxStem = stems[(tigerStemIdx + bIdx) % 10];
+                currentDxBranch = bName;
+                currentDxStem = pStem;
             }
             
-            dxCurrIdx = (dxCurrIdx + dxDir + 120) % 12;
+            drawDxIdx = (drawDxIdx + dxDir + 120) % 12;
         }
 
-        // 若年齡小於起運局數，則以本命宮為大限
+        // 若年齡小於起運局數，則以本命宮為大限（無大限調適）
         if (!currentDxBranch) {
             currentDxBranch = mingBranch;
-            let bIdx = branchOrderForGan.indexOf(mingBranch);
-            currentDxStem = stems[(tigerStemIdx + bIdx) % 10];
+            currentDxStem = stems[mingStemIdx];
         }
 
-        // 取得該大限所在宮位天干的四化
         const dxSihua = sihuaMap[currentDxStem] || {};
+
+        // 【小限計算】
+        let fbhMap = {};
+        if(["寅", "午", "戌"].includes(yearBranch)) fbhMap = {huo: "丑", ling: "卯", ma: "申", xian: "辰"};
+        else if(["巳", "酉", "丑"].includes(yearBranch)) fbhMap = {huo: "卯", ling: "戌", ma: "亥", xian: "未"};
+        else if(["申", "子", "辰"].includes(yearBranch)) fbhMap = {huo: "寅", ling: "戌", ma: "寅", xian: "戌"};
+        else if(["亥", "卯", "未"].includes(yearBranch)) fbhMap = {huo: "酉", ling: "戌", ma: "巳", xian: "丑"};
+
+        let xianBranch = fbhMap.xian || "辰";
+        let xianIdx = branches.indexOf(xianBranch);
+        let xianDir = isMale ? 1 : -1;
+        let currentXxBranch = "";
+
+        for (let a = 1; a <= 100; a++) {
+            let currPosIdx = (xianIdx + (a - 1) * xianDir + 1200) % 12;
+            chart[branches[currPosIdx]].xiaoxian.push(a);
+            if (a === age) {
+                currentXxBranch = branches[currPosIdx];
+            }
+        }
 
         function buildVerticalStar(starName, starType, palaceBranch, isAnnual = false) {
             let natalMiaoVal = "";
@@ -1240,14 +1239,14 @@ function generateChart() {
             let dSihua = (!isAnnual && viewMode === 'annual' && dxSihua[starName]) ? `<span class="sihua-daxian-char">${dxSihua[starName]}</span>` : "";
             let aSihua = (!isAnnual && viewMode === 'annual' && annualSihua[starName]) ? `<span class="sihua-annual-char">${annualSihua[starName]}</span>` : "";
 
+            let sihuaGroup = (bSihua || dSihua || aSihua) ? `<div class="sihua-group">${bSihua}${dSihua}${aSihua}</div>` : "";
+
             return `
                 <div class="star-v-block ${starType}">
                     ${nH}
                     <span class="star-name-wrapper">${starName}</span>
                     ${aH}
-                    ${bSihua}
-                    ${dSihua}
-                    ${aSihua}
+                    ${sihuaGroup}
                 </div>
             `;
         }
@@ -1321,12 +1320,6 @@ function generateChart() {
         let wqPos = branches[(branches.indexOf("辰") + hourOrders.indexOf(hourBranch) + 120) % 12];
         pushStar(wqPos, "文曲", buildVerticalStar("文曲", "type-lucky", wqPos, false));
 
-        let fbhMap = {};
-        if(["寅", "午", "戌"].includes(yearBranch)) fbhMap = {huo: "丑", ling: "卯", ma: "申", xian: "辰"};
-        else if(["巳", "酉", "丑"].includes(yearBranch)) fbhMap = {huo: "卯", ling: "戌", ma: "亥", xian: "未"};
-        else if(["申", "子", "辰"].includes(yearBranch)) fbhMap = {huo: "寅", ling: "戌", ma: "寅", xian: "戌"};
-        else if(["亥", "卯", "未"].includes(yearBranch)) fbhMap = {huo: "酉", ling: "戌", ma: "巳", xian: "丑"};
-        
         if(fbhMap.huo) pushStar(fbhMap.huo, "火星", buildVerticalStar("火星", "type-malefic", fbhMap.huo, false));
         if(fbhMap.ling) pushStar(fbhMap.ling, "鈴星", buildVerticalStar("鈴星", "type-malefic", fbhMap.ling, false));
 
@@ -1471,6 +1464,7 @@ function generateChart() {
         }
 
         const boshiGods = ["博士", "力士", "青龍", "小耗", "將軍", "奏書", "飛簾", "喜神", "病符", "大耗", "伏兵", "官府"];
+        let luIdxNum = branches.indexOf(autoLu);
         const isYangGenderMale = (isYangStem && isMale) || (!isYangStem && !isMale);
         const boshiDir = isYangGenderMale ? 1 : -1;
         for (let i = 0; i < 12; i++) {
@@ -1532,7 +1526,8 @@ function generateChart() {
             }
             let xiaoxianFormatted = xiaoxianLines.join('<br>');
             
-            let liunianTag = (b === lnBranch && viewMode === 'annual') ? `<div class="tag-liunian">小限命</div>` : "";
+            // 加入動態宮位標籤：移除流年太歲，保留虛歲小限命與大限命
+            let xiaoxianTag = (b === currentXxBranch && viewMode === 'annual') ? `<div class="tag-xiaoxian">小限命</div>` : "";
             let daxianHighlightTag = (b === currentDxBranch && viewMode === 'annual') ? `<div class="tag-daxian">大限命</div>` : "";
             
             let currBIdx = branches.indexOf(b);
@@ -1551,12 +1546,13 @@ function generateChart() {
             html += `
                 <div class="palace-card" style="grid-row: ${coord.r}; grid-column: ${coord.c};">
                     <div class="palace-left-col">
-                        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+                        <div style="display:flex; flex-direction:column; align-items:center; gap:3px;">
                             <div class="palace-stem-vertical">
                                 <span>${palaceGanZhi}</span>
                                 ${isShenBadge}
                             </div>
-                            ${liunianTag}
+                            <!-- 小限命、大限命 垂直堆疊（若重疊，大限排在小限下方） -->
+                            ${xiaoxianTag}
                             ${daxianHighlightTag}
                         </div>
                         <div class="palace-name-badge ${isMingClass}">
@@ -1611,7 +1607,6 @@ function generateChart() {
                         <div style="margin-bottom: 2px; color:#701a75; font-size:14px;"><b>命主：</b>${mingZhuStar} | <b>身主：</b>${shenZhuStar}</div>
                         ${ageHtml}
                         <div style="font-size: 12px; color: #64748b; border-top: 1px dashed #cbd5e1; margin-top: 4px; padding-top: 4px;">
-                            ${viewMode === 'annual' ? `小限命：${lnYear}年(${lnStem}${lnBranch})<br>` : ''}
                             排盤日期：${todayStr}
                         </div>
                     </div>
@@ -1648,14 +1643,15 @@ function generateChart() {
         }
         html += `</tr>`;
 
-        let drawDxIdx = (mingIdx + dxDir + 120) % 12;
-        for (let d = 0; d < 8; d++) {
-            let bName = branches[drawDxIdx];
-            let bIdx = branchOrderForGan.indexOf(bName);
-            let pStem = stems[(tigerStemIdx + bIdx) % 10];
+        // 大限表格排版：遵循命宮起算與大限調適
+        let drawTableDxIdx = (mingIdx + dxDir + 120) % 12;
+        for (let d = 1; d <= 8; d++) {
+            let bName = branches[drawTableDxIdx];
+            let daxianStemIdx = (mingStemIdx + d * dxDir + 100) % 10;
+            let pStem = stems[daxianStemIdx];
             
             html += `<tr><td class="limit-dec-cell">${pStem}${bName}<br>大限</td>`;
-            let ageStart = bureauNum + (d * 10);
+            let ageStart = bureauNum + ((d - 1) * 10);
             for (let step = 0; step < 10; step++) {
                 let a = ageStart + step;
                 let sy = birthLunarYear + a - 1;
@@ -1664,7 +1660,7 @@ function generateChart() {
                 html += `<td class="limit-yr-cell"><b>${a}</b><br>${sSt}${sBr}<br>${sy}</td>`;
             }
             html += `</tr>`;
-            drawDxIdx = (drawDxIdx + dxDir + 120) % 12;
+            drawTableDxIdx = (drawTableDxIdx + dxDir + 120) % 12;
         }
         html += `</table>`;
 
