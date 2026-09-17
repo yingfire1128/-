@@ -293,6 +293,20 @@
             display: inline-block;
         }
 
+        /* 大限標籤樣式 */
+        .tag-daxian { 
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            background: #059669; 
+            color: #fff; 
+            font-weight: bold; 
+            font-size: 13px; 
+            padding: 4px 2px; 
+            border-radius: 4px; 
+            letter-spacing: 1px;
+            display: inline-block;
+        }
+
         .palace-name-badge {
             writing-mode: vertical-rl;
             text-orientation: upright;
@@ -449,6 +463,20 @@
             padding: 1px 2px;
             line-height: 1;
             box-shadow: 0 1px 2px rgba(2, 132, 199, 0.3);
+        }
+
+        /* 大限四化樣式 */
+        .sihua-daxian-char {
+            display: inline-block;
+            background: #059669;
+            color: #ffffff;
+            border-radius: 2px;
+            font-weight: normal;
+            font-size: 13px;
+            margin-top: 2px; 
+            padding: 1px 2px;
+            line-height: 1;
+            box-shadow: 0 1px 2px rgba(5, 150, 105, 0.3);
         }
 
         .limit-stack-area {
@@ -688,7 +716,8 @@
             .star-v-block.type-minor, .star-v-block.type-annual, .star-v-block.type-annual-malefic { font-size: 13px !important; }
             .star-miao-char { font-size: 11px !important; }
             .sihua-birth-char, .sihua-annual-char { font-size: 12px !important; padding: 1px 2px !important; margin-top: 2px !important; }
-            .tag-liunian { font-size: 12px !important; padding: 2px !important; }
+            .tag-liunian, .tag-daxian { font-size: 12px !important; padding: 2px !important; }
+            .sihua-daxian-char { font-size: 12px !important; padding: 1px 2px !important; margin-top: 2px !important; }
             .xiaoxian-line, .daxian-line { font-size: 11px !important; }
             .god-v-badge { font-size: 10px !important; }
             .center-box { font-size: 14px !important; }
@@ -782,6 +811,7 @@
 </div>
 
 <script>
+// 請將此處替換為你的 GitHub PNG 圖片網址 (例如 https://raw.githubusercontent.com/.../logo.png)
 const LOGO_BASE64 = "https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/main/logo.png";
 
 const branches = ["寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子", "丑"];
@@ -1129,6 +1159,64 @@ function generateChart() {
 
         let starPosMap = {};
 
+        // 大限與年齡計算移至前方
+        let bureauNum = 3;
+        if (bureau.includes("水")) bureauNum = 2;
+        else if (bureau.includes("木")) bureauNum = 3;
+        else if (bureau.includes("金")) bureauNum = 4;
+        else if (bureau.includes("土")) bureauNum = 5;
+        else if (bureau.includes("火")) bureauNum = 6;
+
+        let birthLunarYear = parseInt(solarDateStr.split('-')[0]); 
+        try {
+            let parts = solarDateStr.split('-');
+            let y = parseInt(parts[0]), month = parseInt(parts[1]), d = parseInt(parts[2]);
+            let hourNum = parseInt(birthTimeStr.split(":")[0], 10);
+            if (hourNum === 23) {
+                let dt = new Date(y, month - 1, d);
+                dt.setDate(dt.getDate() + 1);
+                y = dt.getFullYear(); month = dt.getMonth() + 1; d = dt.getDate();
+            }
+            let s = Solar.fromYmd(y, month, d);
+            birthLunarYear = s.getLunar().getYear();
+        } catch(e) {}
+
+        let age = lnYear - birthLunarYear + 1;
+
+        let startAge = bureauNum;
+        let dxDir = ((isYangStem && isMale) || (!isYangStem && !isMale)) ? 1 : -1;
+        let dxCurrIdx = (mingIdx + dxDir + 120) % 12;
+        let tigerStemIdx = stems.indexOf(tigerStemMap[yearStem] || "丙");
+        const branchOrderForGan = ["寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子", "丑"];
+
+        let currentDxBranch = "";
+        let currentDxStem = "";
+
+        for(let i=0; i<12; i++) {
+            let b = branches[dxCurrIdx];
+            let ageS = startAge + (i * 10);
+            let ageE = ageS + 9;
+            chart[b].daxian = `大限: ${ageS}-${ageE}`;
+            
+            if (age >= ageS && age <= ageE) {
+                currentDxBranch = b;
+                let bIdx = branchOrderForGan.indexOf(b);
+                currentDxStem = stems[(tigerStemIdx + bIdx) % 10];
+            }
+            
+            dxCurrIdx = (dxCurrIdx + dxDir + 120) % 12;
+        }
+
+        // 若年齡小於起運局數，則以本命宮為大限
+        if (!currentDxBranch) {
+            currentDxBranch = mingBranch;
+            let bIdx = branchOrderForGan.indexOf(mingBranch);
+            currentDxStem = stems[(tigerStemIdx + bIdx) % 10];
+        }
+
+        // 取得該大限所在宮位天干的四化
+        const dxSihua = sihuaMap[currentDxStem] || {};
+
         function buildVerticalStar(starName, starType, palaceBranch, isAnnual = false) {
             let natalMiaoVal = "";
             let annualMiaoVal = "";
@@ -1149,6 +1237,7 @@ function generateChart() {
             }
 
             let bSihua = (!isAnnual && birthSihua[starName]) ? `<span class="sihua-birth-char">${birthSihua[starName]}</span>` : "";
+            let dSihua = (!isAnnual && viewMode === 'annual' && dxSihua[starName]) ? `<span class="sihua-daxian-char">${dxSihua[starName]}</span>` : "";
             let aSihua = (!isAnnual && viewMode === 'annual' && annualSihua[starName]) ? `<span class="sihua-annual-char">${annualSihua[starName]}</span>` : "";
 
             return `
@@ -1157,6 +1246,7 @@ function generateChart() {
                     <span class="star-name-wrapper">${starName}</span>
                     ${aH}
                     ${bSihua}
+                    ${dSihua}
                     ${aSihua}
                 </div>
             `;
@@ -1177,13 +1267,6 @@ function generateChart() {
             }
         }
 
-        let bureauNum = 3;
-        if (bureau.includes("水")) bureauNum = 2;
-        else if (bureau.includes("木")) bureauNum = 3;
-        else if (bureau.includes("金")) bureauNum = 4;
-        else if (bureau.includes("土")) bureauNum = 5;
-        else if (bureau.includes("火")) bureauNum = 6;
-        
         let x = 0;
         while ((birthDay + x) % bureauNum !== 0) {
             x++;
@@ -1409,36 +1492,12 @@ function generateChart() {
             if (branches.includes(b)) chart[b].changsheng = csGods[i];
         }
 
-        let xianBranch = fbhMap.xian || "辰";
-        let xianIdx = branches.indexOf(xianBranch);
-        let xianDir = isMale ? 1 : -1;
-        for (let age = 1; age <= 100; age++) {
-            let currPosIdx = (xianIdx + (age - 1) * xianDir + 1200) % 12;
-            chart[branches[currPosIdx]].xiaoxian.push(age);
-        }
-
-        let startAge = bureauNum;
-        let dxDir = ((isYangStem && isMale) || (!isYangStem && !isMale)) ? 1 : -1;
-        let dxCurrIdx = (mingIdx + dxDir + 120) % 12;
-        
-        for(let i=0; i<12; i++) {
-            let b = branches[dxCurrIdx];
-            let ageS = startAge + (i * 10);
-            let ageE = ageS + 9;
-            chart[b].daxian = `大限: ${ageS}-${ageE}`;
-            dxCurrIdx = (dxCurrIdx + dxDir + 120) % 12;
-        }
-
         const palaceCoords = {
             "巳": {r: 1, c: 1}, "午": {r: 1, c: 2}, "未": {r: 1, c: 3}, "申": {r: 1, c: 4},
             "辰": {r: 2, c: 1},                                     "酉": {r: 2, c: 4},
             "卯": {r: 3, c: 1},                                     "戌": {r: 3, c: 4},
             "寅": {r: 4, c: 1}, "丑": {r: 4, c: 2}, "子": {r: 4, c: 3}, "亥": {r: 4, c: 4}
         };
-
-        let tigerStem = tigerStemMap[yearStem] || "丙";
-        let tigerStemIdx = stems.indexOf(tigerStem);
-        const branchOrderForGan = ["寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子", "丑"];
 
         let modeTitle = (viewMode === 'annual') ? `【流年盤：${lnYear} ${lnStem}${lnBranch}年】` : `【本命盤】`;
         
@@ -1474,6 +1533,7 @@ function generateChart() {
             let xiaoxianFormatted = xiaoxianLines.join('<br>');
             
             let liunianTag = (b === lnBranch && viewMode === 'annual') ? `<div class="tag-liunian">小限命</div>` : "";
+            let daxianHighlightTag = (b === currentDxBranch && viewMode === 'annual') ? `<div class="tag-daxian">大限命</div>` : "";
             
             let currBIdx = branches.indexOf(b);
             let palaceOffset = (mingIdx - currBIdx + 12) % 12;
@@ -1497,6 +1557,7 @@ function generateChart() {
                                 ${isShenBadge}
                             </div>
                             ${liunianTag}
+                            ${daxianHighlightTag}
                         </div>
                         <div class="palace-name-badge ${isMingClass}">
                             ${palaceName}
@@ -1530,24 +1591,9 @@ function generateChart() {
 
         let cnLunarDate = getChineseLunarString(birthMonth, birthDay);
 
-        let birthLunarYear = parseInt(solarDateStr.split('-')[0]); 
-        try {
-            let parts = solarDateStr.split('-');
-            let y = parseInt(parts[0]), month = parseInt(parts[1]), d = parseInt(parts[2]);
-            let hourNum = parseInt(birthTimeStr.split(":")[0], 10);
-            if (hourNum === 23) {
-                let dt = new Date(y, month - 1, d);
-                dt.setDate(dt.getDate() + 1);
-                y = dt.getFullYear(); month = dt.getMonth() + 1; d = dt.getDate();
-            }
-            let s = Solar.fromYmd(y, month, d);
-            birthLunarYear = s.getLunar().getYear();
-        } catch(e) {}
-
         let ageHtml = "";
         if (viewMode === 'annual') {
-            let age = lnYear - birthLunarYear + 1;
-            ageHtml = `<div style="margin-bottom: 2px; color:#b91c1c; font-weight:bold; font-size:16px;">當生小限：${age}歲 (${lnYear}年)</div>`;
+            ageHtml = `<div style="margin-bottom: 2px; color:#b91c1c; font-weight:bold; font-size:16px;">當生小限(虛歲)：${age}歲 (${lnYear}年)</div>`;
         }
 
         const zodiacMap = { "子":"鼠", "丑":"牛", "寅":"虎", "卯":"兔", "辰":"龍", "巳":"蛇", "午":"馬", "未":"羊", "申":"猴", "酉":"雞", "戌":"狗", "亥":"豬" };
@@ -1624,7 +1670,7 @@ function generateChart() {
 
         html += `<div class="limit-sihua-grid">`;
         
-        let bStars = Object.keys(sihuaMap[yearStem]);
+        let bStars = Object.keys(birthSihua);
         let bJiStar = bStars[3];
         let bJiBranch = starPosMap[bJiStar] || "子";
         let bJiPalace = twelvePalaceNames[(mingIdx - branches.indexOf(bJiBranch) + 12) % 12];
@@ -1635,6 +1681,20 @@ function generateChart() {
                 <span class="limit-sihua-content">(${yearStem}) ${shortStar[bStars[0]]}、${shortStar[bStars[1]]}、${shortStar[bStars[2]]}、${shortStar[bStars[3]]} <span class="limit-sihua-target">(${bJiPalace}宮)</span></span>
             </div>
         `;
+
+        if (viewMode === 'annual' && Object.keys(dxSihua).length > 0) {
+            let dxStars = Object.keys(dxSihua);
+            let dxJiStar = dxStars[3];
+            let jiDxBIdx = starPosMap[dxJiStar] ? branches.indexOf(starPosMap[dxJiStar]) : 0;
+            let dxJiPalace = twelvePalaceNames[(mingIdx - jiDxBIdx + 12) % 12];
+
+            html += `
+                <div class="limit-sihua-item" style="grid-column: 1 / -1; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px; margin-top: -8px;">
+                    <span class="limit-sihua-label" style="color:#059669;">大 限：</span>
+                    <span class="limit-sihua-content">(${currentDxStem}) ${shortStar[dxStars[0]]}、${shortStar[dxStars[1]]}、${shortStar[dxStars[2]]}、${shortStar[dxStars[3]]} <span class="limit-sihua-target">(${dxJiPalace}宮)</span></span>
+                </div>
+            `;
+        }
 
         for(let i=0; i<12; i++) {
             let currBIdx = (mingIdx - i + 12) % 12;
