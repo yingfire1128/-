@@ -1126,7 +1126,7 @@ function generateChart() {
         let hIdx = hourOrders.indexOf(hourBranch);
         let mingIdx = branches.indexOf(mingBranch);
         
-        // 【修正：身宮精準計算公式】 - 由寅起順數至生月，再順數至生時
+        // 【絕對精準：身宮計算公式】 - 由寅起順數至生月，再順數至生時
         let shenIdx = (((0 + (birthMonth - 1)) % 12) + hIdx + 120) % 12;
         let shenBranch = branches[shenIdx];
 
@@ -1391,7 +1391,7 @@ function generateChart() {
         pushStar(branches[fgIdx2], "鳳閣", buildVerticalStar("鳳閣", "type-minor", branches[fgIdx2], false));
         pushStar(branches[fgIdx2], "解神", buildVerticalStar("解神", "type-minor", branches[fgIdx2], false));
 
-        // 【修正：天才與天壽精準轉換為地支字串推送】
+        // 【天才、天壽精準回歸】
         let tcaiIdx = (mingIdx + yearBranchIdx) % 12;
         let tsIdx = (shenIdx + yearBranchIdx) % 12;
         pushStar(branches[tcaiIdx], "天才", buildVerticalStar("天才", "type-minor", branches[tcaiIdx], false));
@@ -1455,7 +1455,7 @@ function generateChart() {
         });
 
         // ==========================================
-        // 【流年星曜】
+        // 【流年星曜】：全數納入
         // ==========================================
         if (viewMode === 'annual') {
             const jiangqians = ["將星", "攀鞍", "歲驛", "息神", "華蓋", "劫煞", "災煞", "天煞", "指背", "咸池", "月煞", "亡神"];
@@ -1583,7 +1583,6 @@ function generateChart() {
                     
                     <div class="palace-body">
                         <div class="primary-stars-row">${row1Html || ''}</div>
-                        <!-- 乙丙丁與流年星統一由右至左排列 -->
                         <div class="secondary-stars-row">${row2Html || ''}</div>
                         
                         <div class="palace-footer">
@@ -1705,7 +1704,6 @@ function generateChart() {
             let jiDxBIdx = starPosMap[dxJiStar] ? branches.indexOf(starPosMap[dxJiStar]) : 0;
             let dxJiPalace = twelvePalaceNames[(mingIdx - jiDxBIdx + 12) % 12];
 
-            // 確保「大限」列與「當生」列有呼吸空間
             html += `
                 <div class="limit-sihua-item" style="grid-column: 1 / -1; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px;">
                     <span class="limit-sihua-label" style="color:#059669;">大 限：</span>
