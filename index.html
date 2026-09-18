@@ -280,7 +280,7 @@
             margin-top: 2px;
         }
 
-        /* 小限命與大限命標籤 */
+        /* 標籤樣式：小限命(紫)、大限命(綠) */
         .tag-xiaoxian, .tag-daxian { 
             writing-mode: vertical-rl;
             text-orientation: upright;
@@ -340,6 +340,7 @@
             flex-shrink: 0;
         }
 
+        /* 副星與流年星合併區域 */
         .secondary-stars-row {
             display: flex;
             flex-direction: row; 
@@ -347,22 +348,10 @@
             align-items: flex-start; 
             align-content: flex-start;
             flex-wrap: wrap;
-            gap: 1px; 
+            gap: 2px; /* 增加一點點間距讓星曜更清晰 */
             flex-grow: 1;
-            padding-top: 2px;
+            padding-top: 4px;
             overflow: hidden;
-        }
-
-        .annual-stars-row {
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: flex-start;
-            flex-wrap: wrap;
-            gap: 1px;
-            padding-top: 2px;
-            border-top: 1px dotted #e2e8f0;
-            overflow: hidden;
-            flex-shrink: 0;
         }
 
         .palace-footer {
@@ -420,7 +409,6 @@
         .boshi-badge { color: #0369a1; background: #f0f9ff; border: 1px solid #bae6fd; }
         .changsheng-badge { color: #166534; background: #f0fdf4; border: 1px solid #bbf7d0; }
 
-        /* 防走位核心屬性：flex-shrink: 0 確保星曜不被擠壓變形 */
         .star-v-block {
             writing-mode: vertical-rl;
             text-orientation: upright;
@@ -439,18 +427,19 @@
             display: inline-block;
         }
 
-        /* 依要求縮小主星 2px：由 26px -> 24px */
+        /* 主星字體 18px */
         .star-v-block.type-main {
             background: #fff7ed;
             color: var(--star-main);
             font-weight: bold;
-            font-size: 24px; 
+            font-size: 18px; 
         }
 
+        /* 【放大 2px】乙丙丁與流年星曜 */
         .star-v-block.type-lucky {
             background: #f0f9ff;
             color: var(--star-lucky);
-            font-size: 13px;
+            font-size: 15px; /* 13 -> 15 */
             font-weight: bold;
             padding: 1px;
         }
@@ -458,7 +447,7 @@
         .star-v-block.type-malefic {
             background: #fef2f2;
             color: var(--star-malefic);
-            font-size: 13px;
+            font-size: 15px; /* 13 -> 15 */
             font-weight: bold;
             padding: 1px;
         }
@@ -466,15 +455,16 @@
         .star-v-block.type-minor {
             background: #f8fafc;
             color: var(--star-minor);
-            font-size: 12px; 
+            font-size: 14px; /* 12 -> 14 */
             font-weight: bold; 
             padding: 1px;
         }
 
+        /* 流年星保留原本的虛線樣式，只放大字體 */
         .star-v-block.type-annual {
             background: #f0fdf4;
             color: #166534;
-            font-size: 12px; 
+            font-size: 14px; /* 12 -> 14 */
             font-weight: bold; 
             border: 1px dashed #86efac;
             padding: 1px;
@@ -483,14 +473,14 @@
         .star-v-block.type-annual-malefic {
             background: #fef2f2;
             color: #dc2626;
-            font-size: 12px; 
+            font-size: 14px; /* 12 -> 14 */
             border: 1px dashed #fca5a5;
             font-weight: bold; 
             padding: 1px;
         }
 
-        .natal-miao { color: #047857; font-size: 13px; font-weight: bold; margin-bottom: 2px; display: inline-block; }
-        .annual-miao { color: #ea580c; font-size: 13px; font-weight: bold; margin-top: 2px; display: inline-block; }
+        .natal-miao { color: #047857; font-size: 12px; font-weight: bold; margin-bottom: 2px; display: inline-block; }
+        .annual-miao { color: #ea580c; font-size: 12px; font-weight: bold; margin-top: 2px; display: inline-block; }
 
         /* 四化標籤：直接垂直堆疊 */
         .sihua-birth-char, .sihua-daxian-char, .sihua-annual-char {
@@ -500,7 +490,7 @@
             color: #ffffff;
             border-radius: 2px;
             font-weight: bold;
-            font-size: 13px; 
+            font-size: 12px; 
             padding: 2px 1px;
             line-height: 1;
             margin-top: 4px; 
@@ -566,6 +556,8 @@
             padding: 24px;
             background: #ffffff;
             color: #0f233a;
+            box-sizing: border-box;
+            max-width: 100%;
         }
 
         .limit-header-info {
@@ -575,7 +567,7 @@
             margin-bottom: 16px;
             padding-bottom: 12px;
             border-bottom: 2px solid #334155;
-            font-size: 16px;
+            font-size: 12px;
             font-weight: bold;
         }
 
@@ -590,7 +582,7 @@
             border: 1px solid #64748b;
             text-align: center;
             padding: 8px 4px;
-            font-size: 15px;
+            font-size: 11px;
             vertical-align: middle;
             line-height: 1.3;
         }
@@ -607,20 +599,24 @@
         }
 
         .limit-yr-cell b {
-            font-size: 16px;
+            font-size: 12px;
             color: #b91c1c; 
         }
 
+        /* 第二頁網格：強制防止寬度溢出 (Anti-blowout) */
         .limit-sihua-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); /* 鎖死寬度 */
             gap: 12px 24px;
             background: #f8fafc;
             border: 1px solid #cbd5e1;
             padding: 16px;
             border-radius: 8px;
-            font-size: 15px;
+            font-size: 11px;
             font-weight: bold;
+            width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
         }
 
         .limit-sihua-item {
@@ -628,21 +624,25 @@
             align-items: center;
             border-bottom: 1px dashed #e2e8f0;
             padding-bottom: 6px;
+            min-width: 0; /* 防止子元素撐爆 Grid */
+            flex-wrap: wrap; /* 允許過長文字換行 */
         }
 
         .limit-sihua-label {
             color: #0369a1;
-            width: 70px;
+            width: 50px;
             flex-shrink: 0;
         }
 
         .limit-sihua-content {
             flex-grow: 1;
+            white-space: normal;
         }
 
         .limit-sihua-target {
             color: #b45309;
             margin-left: 8px;
+            display: inline-block;
         }
 
         /* =====================================
@@ -651,7 +651,7 @@
         @media print {
             @page {
                 size: A4 portrait;
-                margin: 10mm !important; /* 加入 10mm 安全邊距，解決貼邊被裁切的問題 */
+                margin: 5mm !important; /* 精確控制硬體邊距 */
             }
             body, html { 
                 width: 100% !important;
@@ -675,7 +675,7 @@
             }
             .a4-sheet { 
                 width: 100% !important; 
-                height: 275mm !important; /* 適應 A4 扣除安全邊界後的高度 */
+                height: 280mm !important; /* 微調以適配 5mm 邊距 */
                 margin: 0 auto !important; 
                 padding: 2mm !important; 
                 box-sizing: border-box !important;
@@ -696,17 +696,16 @@
             }
             .center-watermark-bg { opacity: 0.1 !important; }
             
-            /* 列印時解除硬性高度限制，避免撐破 A4 */
             .primary-stars-row { min-height: 80px !important; gap: 2px !important; }
             .secondary-stars-row { padding-top: 1px !important; gap: 1px !important; }
-            .annual-stars-row { padding-top: 1px !important; gap: 1px !important; }
             
-            /* 列印專屬字體比例：主星再縮小 2px -> 20px */
             .palace-stem-vertical { font-size: 15px !important; }
             .palace-name-badge { font-size: 17px !important; padding: 3px 2px !important; }
-            .star-v-block.type-main { font-size: 20px !important; }
-            .star-v-block.type-lucky, .star-v-block.type-malefic { font-size: 12px !important; padding: 1px !important; }
-            .star-v-block.type-minor, .star-v-block.type-annual, .star-v-block.type-annual-malefic { font-size: 11px !important; padding: 0 !important; }
+            .star-v-block.type-main { font-size: 18px !important; }
+            
+            /* 列印版副星放大同步 */
+            .star-v-block.type-lucky, .star-v-block.type-malefic { font-size: 14px !important; padding: 1px !important; }
+            .star-v-block.type-minor, .star-v-block.type-annual, .star-v-block.type-annual-malefic { font-size: 13px !important; padding: 1px !important; }
             .star-miao-char { font-size: 10px !important; }
             
             .sihua-birth-char, .sihua-daxian-char, .sihua-annual-char { font-size: 11px !important; padding: 1px !important; margin-top: 2px !important; }
@@ -717,13 +716,13 @@
             .center-box { font-size: 14px !important; }
             .center-box h3 { font-size: 19px !important; margin-bottom: 2px !important; }
 
-            /* 第二頁表格專屬壓縮，解決不夠位的問題 */
-            .limit-sheet-page { padding: 5mm !important; height: 275mm !important; }
-            .limit-table { margin-bottom: 12px !important; }
-            .limit-table td { padding: 6px 2px !important; font-size: 13px !important; }
-            .limit-yr-cell b { font-size: 14px !important; }
-            .limit-sihua-grid { gap: 6px 12px !important; padding: 12px !important; font-size: 13px !important; }
-            .limit-sihua-item { padding-bottom: 4px !important; }
+            /* 第二頁表格列印壓縮 */
+            .limit-sheet-page { padding: 10mm 5mm !important; height: 280mm !important; }
+            .limit-table { margin-bottom: 12px !important; width: 100% !important; }
+            .limit-table td { padding: 6px 2px !important; font-size: 10px !important; } 
+            .limit-yr-cell b { font-size: 11px !important; } 
+            .limit-sihua-grid { gap: 4px 10px !important; padding: 10px !important; font-size: 10px !important; width: 100% !important; box-sizing: border-box !important; overflow: hidden !important; } 
+            .limit-sihua-item { padding-bottom: 4px !important; flex-wrap: wrap !important; }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.js"></script>
@@ -1285,16 +1284,16 @@ function generateChart() {
             `;
         }
 
+        // 修改：讓流年星曜 (isAnnualRow=true) 直接排進 secondary-stars-row 中
         function pushStar(branchName, starName, starHtml, isAnnualRow = false) {
             if (branches.includes(branchName)) {
                 if (!isAnnualRow) {
                     starPosMap[starName] = branchName; 
                 }
-                if (isAnnualRow) {
-                    chart[branchName].row3.push(starHtml);
-                } else if (row1Stars.includes(starName)) {
+                if (row1Stars.includes(starName)) {
                     chart[branchName].row1.push(starHtml);
                 } else {
+                    // 將流年星與副星統一放入 row2 中，達成混合排版
                     chart[branchName].row2.push(starHtml);
                 }
             }
@@ -1410,8 +1409,8 @@ function generateChart() {
 
         let tcaiIdx = (mingIdx + yearBranchIdx) % 12;
         let tsIdx = (shenIdx + yearBranchIdx) % 12;
-        pushStar(branches[tcaiIdx], "天才", buildVerticalStar("天才", "type-minor", branches[tcaiIdx], false));
-        pushStar(branches[tsIdx], "天壽", buildVerticalStar("天壽", "type-minor", branches[tsIdx], false));
+        pushStar(tcaiIdx, "天才", buildVerticalStar("天才", "type-minor", branches[tcaiIdx], false));
+        pushStar(tsIdx, "天壽", buildVerticalStar("天壽", "type-minor", branches[tsIdx], false));
 
         const feiLianMap = {"子":"申", "丑":"酉", "寅":"戌", "卯":"巳", "辰":"午", "巳":"未", "午":"寅", "未":"卯", "申":"辰", "酉":"亥", "戌":"子", "亥":"丑"};
         const poSuiMap = {"子":"巳", "午":"巳", "卯":"巳", "酉":"巳", "寅":"酉", "申":"酉", "巳":"酉", "亥":"酉", "辰":"丑", "戌":"丑", "丑":"丑", "未":"丑"};
@@ -1471,7 +1470,7 @@ function generateChart() {
         });
 
         // ==========================================
-        // 【流年星曜】：歲建回歸！
+        // 【流年星曜】：與副星合併排版，保留樣式
         // ==========================================
         if (viewMode === 'annual') {
             const jiangqians = ["將星", "攀鞍", "歲驛", "息神", "華蓋", "劫煞", "災煞", "天煞", "指背", "咸池", "月煞", "亡神"];
@@ -1556,7 +1555,6 @@ function generateChart() {
             let coord = palaceCoords[b];
             let row1Html = chart[b].row1.join('');
             let row2Html = chart[b].row2.join('');
-            let row3Html = (viewMode === 'annual') ? chart[b].row3.join('') : '';
             let daxianTag = chart[b].daxian;
             let boshiTag = chart[b].boshi ? `<span class="god-v-badge boshi-badge">${chart[b].boshi}</span>` : '';
             let changshengTag = chart[b].changsheng ? `<span class="god-v-badge changsheng-badge">${chart[b].changsheng}</span>` : '';
@@ -1582,8 +1580,6 @@ function generateChart() {
             let pStem = stems[(tigerStemIdx + bIdx) % 10];
             let palaceGanZhi = pStem + b;
 
-            let annualRowHtml = row3Html ? `<div class="annual-stars-row">${row3Html}</div>` : '';
-
             html += `
                 <div class="palace-card" style="grid-row: ${coord.r}; grid-column: ${coord.c};">
                     <div class="palace-left-col">
@@ -1592,7 +1588,6 @@ function generateChart() {
                                 <span>${palaceGanZhi}</span>
                                 ${isShenBadge}
                             </div>
-                            <!-- 小限命與大限命垂直堆疊 -->
                             ${xiaoxianTag}
                             ${daxianHighlightTag}
                         </div>
@@ -1603,10 +1598,9 @@ function generateChart() {
                     
                     <div class="palace-body">
                         <div class="primary-stars-row">${row1Html || ''}</div>
+                        <!-- 副星與流年星合併區塊 -->
                         <div class="secondary-stars-row">${row2Html || ''}</div>
-                        ${annualRowHtml}
                         
-                        <!-- 獨立到底座：歲數在上，大限在下，右側顯示十二神 -->
                         <div class="palace-footer">
                             <div class="limit-stack-area">
                                 <div class="xiaoxian-line">${xiaoxianFormatted}</div>
