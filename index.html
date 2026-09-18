@@ -280,7 +280,7 @@
             margin-top: 2px;
         }
 
-        /* 標籤樣式：小限命(紫)、大限命(綠) */
+        /* 小限命與大限命標籤 */
         .tag-xiaoxian, .tag-daxian { 
             writing-mode: vertical-rl;
             text-orientation: upright;
@@ -328,20 +328,18 @@
             position: relative;
         }
 
-        /* 放大主星專區 */
         .primary-stars-row {
             display: flex;
             flex-direction: row-reverse;
             justify-content: flex-start;
             gap: 6px;
-            min-height: 150px; /* 給予主星與四化足夠垂直空間 */
+            min-height: 150px; 
             padding-bottom: 4px;
             border-bottom: 1px dashed #cbd5e1;
             overflow: hidden;
             flex-shrink: 0;
         }
 
-        /* 極致壓縮副星專區 */
         .secondary-stars-row {
             display: flex;
             flex-direction: row; 
@@ -349,7 +347,7 @@
             align-items: flex-start; 
             align-content: flex-start;
             flex-wrap: wrap;
-            gap: 1px; /* 極限壓縮間距防止走位 */
+            gap: 1px; 
             flex-grow: 1;
             padding-top: 2px;
             overflow: hidden;
@@ -427,29 +425,28 @@
             writing-mode: vertical-rl;
             text-orientation: upright;
             display: flex;
-            flex-direction: row; /* 在 vertical-rl 下，row = 由上至下 */
+            flex-direction: row; 
             align-items: center; 
             justify-content: flex-start; 
             padding: 2px;
             border-radius: 4px;
             line-height: 1.15;
             flex-shrink: 0; 
-            white-space: nowrap; /* 確保文字直排不折行 */
+            white-space: nowrap; 
         }
 
         .star-name-wrapper {
             display: inline-block;
         }
 
-        /* 霸氣放大 14 主星 */
+        /* 依要求縮小主星 2px：由 26px -> 24px */
         .star-v-block.type-main {
             background: #fff7ed;
             color: var(--star-main);
             font-weight: bold;
-            font-size: 26px; 
+            font-size: 24px; 
         }
 
-        /* 縮小乙丙丁級星 */
         .star-v-block.type-lucky {
             background: #f0f9ff;
             color: var(--star-lucky);
@@ -495,7 +492,7 @@
         .natal-miao { color: #047857; font-size: 13px; font-weight: bold; margin-bottom: 2px; display: inline-block; }
         .annual-miao { color: #ea580c; font-size: 13px; font-weight: bold; margin-top: 2px; display: inline-block; }
 
-        /* 四化標籤：直接垂直堆疊 (不再使用外部群組包裝) */
+        /* 四化標籤：直接垂直堆疊 */
         .sihua-birth-char, .sihua-daxian-char, .sihua-annual-char {
             display: inline-flex;
             align-items: center;
@@ -503,10 +500,10 @@
             color: #ffffff;
             border-radius: 2px;
             font-weight: bold;
-            font-size: 13px; /* 微調字體配合主星 */
+            font-size: 13px; 
             padding: 2px 1px;
             line-height: 1;
-            margin-top: 4px; /* 與上方星曜或其他四化產生間距 */
+            margin-top: 4px; 
             writing-mode: vertical-rl;
             text-orientation: upright;
             flex-shrink: 0;
@@ -649,16 +646,16 @@
         }
 
         /* =====================================
-           【黃金列印設定】：保證 100% 縮放一頁印滿
+           【黃金列印設定】：保證 100% 縮放印滿 A4，解決切邊與走位
            ===================================== */
         @media print {
             @page {
                 size: A4 portrait;
-                margin: 0 !important; /* 絕對移除瀏覽器預設頁首頁尾與邊距 */
+                margin: 10mm !important; /* 加入 10mm 安全邊距，解決貼邊被裁切的問題 */
             }
             body, html { 
-                width: 210mm !important;
-                height: 297mm !important; /* 強制鎖定 A4 尺寸 */
+                width: 100% !important;
+                height: 100% !important; 
                 background: #ffffff !important; 
                 margin: 0 !important; 
                 padding: 0 !important; 
@@ -666,7 +663,7 @@
                 print-color-adjust: exact !important; 
             }
             .container { 
-                width: 210mm !important;
+                width: 100% !important;
                 max-width: 100% !important; 
                 margin: 0 !important; 
                 padding: 0 !important; 
@@ -677,19 +674,19 @@
                 display: none !important; 
             }
             .a4-sheet { 
-                width: 210mm !important; 
-                height: 297mm !important; 
-                margin: 0 !important; 
-                padding: 8mm !important; /* 自行設定安全邊距，避開印表機死角 */
+                width: 100% !important; 
+                height: 275mm !important; /* 適應 A4 扣除安全邊界後的高度 */
+                margin: 0 auto !important; 
+                padding: 2mm !important; 
                 box-sizing: border-box !important;
                 box-shadow: none !important; 
                 border-radius: 0 !important; 
-                page-break-after: always !important; /* 保證不黏到下一頁 */
+                page-break-after: always !important; 
                 page-break-inside: avoid !important;
             }
             .grid-chart { 
                 width: 100% !important;
-                height: 100% !important; /* 自動填滿 297mm 減去安全邊距的空間 */
+                height: 100% !important; 
                 border-top: 2px solid #000000 !important; 
                 border-left: 2px solid #000000 !important; 
             }
@@ -699,12 +696,12 @@
             }
             .center-watermark-bg { opacity: 0.1 !important; }
             
-            /* 列印時解除 160px 硬性限制，改由 flex 自動分配，避免撐破 A4 */
+            /* 列印時解除硬性高度限制，避免撐破 A4 */
             .primary-stars-row { min-height: 80px !important; gap: 2px !important; }
             .secondary-stars-row { padding-top: 1px !important; gap: 1px !important; }
             .annual-stars-row { padding-top: 1px !important; gap: 1px !important; }
             
-            /* 列印專屬字體黃金比例 (清晰不走位) */
+            /* 列印專屬字體比例：主星再縮小 2px -> 20px */
             .palace-stem-vertical { font-size: 15px !important; }
             .palace-name-badge { font-size: 17px !important; padding: 3px 2px !important; }
             .star-v-block.type-main { font-size: 20px !important; }
@@ -720,7 +717,13 @@
             .center-box { font-size: 14px !important; }
             .center-box h3 { font-size: 19px !important; margin-bottom: 2px !important; }
 
-            .limit-sheet-page { padding: 12mm !important; }
+            /* 第二頁表格專屬壓縮，解決不夠位的問題 */
+            .limit-sheet-page { padding: 5mm !important; height: 275mm !important; }
+            .limit-table { margin-bottom: 12px !important; }
+            .limit-table td { padding: 6px 2px !important; font-size: 13px !important; }
+            .limit-yr-cell b { font-size: 14px !important; }
+            .limit-sihua-grid { gap: 6px 12px !important; padding: 12px !important; font-size: 13px !important; }
+            .limit-sihua-item { padding-bottom: 4px !important; }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.js"></script>
@@ -808,7 +811,6 @@
 </div>
 
 <script>
-// 請將此處替換為你的 GitHub PNG 圖片網址
 const LOGO_BASE64 = "https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/main/logo.png";
 
 const branches = ["寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子", "丑"];
@@ -829,7 +831,6 @@ const shortStar = {
 
 const luMap = {"甲": "寅", "乙": "卯", "丙": "巳", "丁": "午", "戊": "巳", "己": "午", "庚": "申", "辛": "酉", "壬": "亥", "癸": "子"};
 
-// 【修正：天魁、天鉞位置精準對調】
 const kuiYueMap = {
     "甲": {kui: "未", yue: "丑"},
     "乙": {kui: "申", yue: "子"},
@@ -843,7 +844,6 @@ const kuiYueMap = {
     "癸": {kui: "巳", yue: "卯"}
 };
 
-// 精準四化對應（庚年「陽武同陰」、壬年「梁紫府武」）
 const sihuaMap = {
     "甲": { "廉貞": "祿", "破軍": "權", "武曲": "科", "太陽": "忌" },
     "乙": { "天機": "祿", "天梁": "權", "紫微": "科", "太陰": "忌" },
@@ -1189,7 +1189,7 @@ function generateChart() {
 
         let age = lnYear - birthLunarYear + 1;
 
-        // 【大限計算：命宮無大限概念】 1st大限由命宮下一格起算
+        // 【大限計算：命宮無大限概念】
         let startAge = bureauNum;
         let dxDir = ((isYangStem && isMale) || (!isYangStem && !isMale)) ? 1 : -1;
         let drawDxIdx = (mingIdx + dxDir + 120) % 12; 
@@ -1273,7 +1273,6 @@ function generateChart() {
             let dSihua = (!isAnnual && viewMode === 'annual' && dxSihua[starName]) ? `<span class="sihua-daxian-char">${dxSihua[starName]}</span>` : "";
             let aSihua = (!isAnnual && viewMode === 'annual' && annualSihua[starName]) ? `<span class="sihua-annual-char">${annualSihua[starName]}</span>` : "";
 
-            // 完全拔除水平群組 (sihua-group)，讓標籤做為 flex item 自動延 inline 軸 (垂直) 往下生長
             return `
                 <div class="star-v-block ${starType}">
                     ${nH}
@@ -1488,7 +1487,6 @@ function generateChart() {
                 pushStar(b, jiangqians[i], buildVerticalStar(jiangqians[i], "type-annual", b, true), true);
             }
 
-            // 【重點修正】：無條件推播包含「歲建」在內的完整歲前十二神陣列
             const suiqians = ["歲建", "晦氣", "喪門", "貫索", "官符", "小耗", "大耗", "龍德", "白虎", "天德", "吊客", "病符"];
             let sqIdx = standardBranches.indexOf(lnBranch);
             for(let i=0; i<12; i++) {
