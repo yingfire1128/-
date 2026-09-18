@@ -280,7 +280,6 @@
             margin-top: 2px;
         }
 
-        /* 標籤樣式：小限命(紫)、大限命(綠) */
         .tag-xiaoxian, .tag-daxian { 
             writing-mode: vertical-rl;
             text-orientation: upright;
@@ -328,7 +327,6 @@
             position: relative;
         }
 
-        /* 主星專區 */
         .primary-stars-row {
             display: flex;
             flex-direction: row-reverse;
@@ -337,14 +335,13 @@
             min-height: 150px; 
             padding-bottom: 4px;
             border-bottom: 1px dashed #cbd5e1;
-            overflow: visible; /* 允許四化過長時自然顯示，防止被切斷 */
+            overflow: visible; 
             flex-shrink: 0;
         }
 
-        /* 副星與流年星合併區域 */
         .secondary-stars-row {
             display: flex;
-            flex-direction: row-reverse; /* 統一由右至左排列 */
+            flex-direction: row-reverse; 
             justify-content: flex-start;
             align-items: flex-start; 
             align-content: flex-start;
@@ -395,11 +392,11 @@
             align-items: flex-end;
         }
 
-        /* 放大 2px：十二神煞字體 */
+        /* 長生、博士十二神字體：放大至 13px */
         .god-v-badge {
             writing-mode: vertical-rl;
             text-orientation: upright;
-            font-size: 13px; /* 11px -> 13px */
+            font-size: 13px; 
             font-weight: bold;
             letter-spacing: 0.5px;
             padding: 2px 1px;
@@ -429,6 +426,7 @@
             display: inline-block;
         }
 
+        /* 14 主星：18px */
         .star-v-block.type-main {
             background: #fff7ed;
             color: var(--star-main);
@@ -436,6 +434,7 @@
             font-size: 18px; 
         }
 
+        /* 乙級星：15px */
         .star-v-block.type-lucky, .star-v-block.type-malefic {
             background: #f0f9ff;
             color: var(--star-lucky);
@@ -448,6 +447,7 @@
             color: var(--star-malefic);
         }
 
+        /* 丙丁級星與流年星：14px */
         .star-v-block.type-minor {
             background: #f8fafc;
             color: var(--star-minor);
@@ -477,7 +477,7 @@
         .natal-miao { color: #047857; font-size: 12px; font-weight: bold; margin-bottom: 2px; display: inline-block; }
         .annual-miao { color: #ea580c; font-size: 12px; font-weight: bold; margin-top: 2px; display: inline-block; }
 
-        /* 放大 2px：四化標籤字體 */
+        /* 四化標籤：字體放大至 14px */
         .sihua-birth-char, .sihua-daxian-char, .sihua-annual-char {
             display: inline-flex;
             align-items: center;
@@ -485,7 +485,7 @@
             color: #ffffff;
             border-radius: 2px;
             font-weight: bold;
-            font-size: 14px; /* 12px -> 14px */
+            font-size: 14px; 
             padding: 3px 2px;
             line-height: 1;
             margin-top: 4px; 
@@ -598,6 +598,7 @@
             color: #b91c1c; 
         }
 
+        /* 第二頁網格防溢出 */
         .limit-sihua-grid {
             display: grid;
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); 
@@ -690,7 +691,7 @@
             }
             .center-watermark-bg { opacity: 0.1 !important; }
             
-            /* 增加列印時主星區塊的空間，防止四化被切斷 */
+            /* 列印時主星區塊放寬高度，並允許四化溢出顯示 */
             .primary-stars-row { min-height: 95px !important; gap: 2px !important; overflow: visible !important; }
             .secondary-stars-row { padding-top: 1px !important; gap: 1px !important; }
             
@@ -702,7 +703,7 @@
             .star-v-block.type-minor, .star-v-block.type-annual, .star-v-block.type-annual-malefic { font-size: 13px !important; padding: 1px !important; }
             .star-miao-char { font-size: 10px !important; }
             
-            /* 列印版四化與十二神字體放大 2px */
+            /* 列印版四化與十二神字體全面放大 */
             .sihua-birth-char, .sihua-daxian-char, .sihua-annual-char { font-size: 13px !important; padding: 2px 1px !important; margin-top: 2px !important; }
             .god-v-badge { font-size: 11px !important; padding: 1px !important; }
 
@@ -1296,7 +1297,7 @@ function generateChart() {
         }
 
         // ==========================================
-        // 【14 主星定位邏輯】
+        // 【核心計算】：14 主星定位邏輯
         // ==========================================
         let x = 0;
         while ((birthDay + x) % bureauNum !== 0) {
@@ -1594,7 +1595,7 @@ function generateChart() {
                     
                     <div class="palace-body">
                         <div class="primary-stars-row">${row1Html || ''}</div>
-                        <!-- 副星與流年星合併區塊 -->
+                        <!-- 乙丙丁與流年星統一由右至左排列，視覺緊湊美觀 -->
                         <div class="secondary-stars-row">${row2Html || ''}</div>
                         
                         <div class="palace-footer">
@@ -1716,6 +1717,7 @@ function generateChart() {
             let jiDxBIdx = starPosMap[dxJiStar] ? branches.indexOf(starPosMap[dxJiStar]) : 0;
             let dxJiPalace = twelvePalaceNames[(mingIdx - jiDxBIdx + 12) % 12];
 
+            // 已刪除 margin-top: -8px; 讓其與上方有呼吸空間
             html += `
                 <div class="limit-sihua-item" style="grid-column: 1 / -1; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px;">
                     <span class="limit-sihua-label" style="color:#059669;">大 限：</span>
