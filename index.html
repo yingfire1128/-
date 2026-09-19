@@ -280,7 +280,6 @@
             margin-top: 2px;
         }
 
-        /* 標籤樣式：小限命(紫)、大限命(綠) */
         .tag-xiaoxian, .tag-daxian { 
             writing-mode: vertical-rl;
             text-orientation: upright;
@@ -426,7 +425,6 @@
             display: inline-block;
         }
 
-        /* 14 主星維持 18px */
         .star-v-block.type-main {
             background: #fff7ed;
             color: var(--star-main);
@@ -475,7 +473,6 @@
         .natal-miao { color: #047857; font-size: 12px; font-weight: bold; margin-bottom: 2px; display: inline-block; }
         .annual-miao { color: #ea580c; font-size: 12px; font-weight: bold; margin-top: 2px; display: inline-block; }
 
-        /* 四化標籤：直接垂直堆疊 */
         .sihua-birth-char, .sihua-daxian-char, .sihua-annual-char {
             display: inline-flex;
             align-items: center;
@@ -596,7 +593,6 @@
             color: #b91c1c; 
         }
 
-        /* 防溢出限制 */
         .limit-sihua-grid {
             display: grid;
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); 
@@ -638,9 +634,6 @@
             display: inline-block;
         }
 
-        /* =====================================
-           【黃金列印設定】
-           ===================================== */
         @media print {
             @page {
                 size: A4 portrait;
@@ -891,7 +884,8 @@ const rawMiaoWangMap = {
 
 function getHardcodedMiao(starName, palaceBranch) {
     let baseName = starName.replace('流', '');
-    if (baseName === '羊') baseName = '擎羊';
+    // 修正：流擎正名對應
+    if (baseName === '羊' || baseName === '擎') baseName = '擎羊';
     if (baseName === '陀') baseName = '陀羅';
     if (baseName === '祿') baseName = '祿存';
     if (baseName === '魁') baseName = '天魁';
@@ -1461,17 +1455,27 @@ function generateChart() {
             }
         });
 
-        // 【當生旬空、旬亡】
-        let sIdx = stems.indexOf(yearStem);
-        let bIdx = standardBranches.indexOf(yearBranch);
-        let offset = (bIdx - sIdx + 12) % 12;
-        let natalKong1 = standardBranches[(offset + 10) % 12];
-        let natalKong2 = standardBranches[(offset + 11) % 12];
-        pushStar(natalKong1, "旬空", buildVerticalStar("旬空", "type-minor", natalKong1, false));
-        pushStar(natalKong2, "旬亡", buildVerticalStar("旬亡", "type-minor", natalKong2, false));
+        // 【新增：當生旬空、旬亡】 - 陽支為空、陰支為亡
+        function getXunKongWang(stemStr, branchStr) {
+            let sIdx = stems.indexOf(stemStr);
+            let bIdx = standardBranches.indexOf(branchStr);
+            let offset = (bIdx - sIdx + 12) % 12;
+            let k1 = standardBranches[(offset + 10) % 12];
+            let k2 = standardBranches[(offset + 11) % 12];
+            let res = {};
+            if (standardBranches.indexOf(k1) % 2 === 0) { // 偶數為陽
+                res.kong = k1; res.wang = k2;
+            } else {
+                res.kong = k2; res.wang = k1;
+            }
+            return res;
+        }
+        let natalXun = getXunKongWang(yearStem, yearBranch);
+        pushStar(natalXun.kong, "旬空", buildVerticalStar("旬空", "type-minor", natalXun.kong, false));
+        pushStar(natalXun.wang, "旬亡", buildVerticalStar("旬亡", "type-minor", natalXun.wang, false));
 
         // ==========================================
-        // 【流年星曜】
+        // 【流年星曜】：全數納入 isAnnualRow = true (合併入 row2)
         // ==========================================
         if (viewMode === 'annual') {
             const jiangqians = ["將星", "攀鞍", "歲驛", "息神", "華蓋", "劫煞", "災煞", "天煞", "指背", "咸池", "月煞", "亡神"];
@@ -1494,25 +1498,23 @@ function generateChart() {
                 pushStar(b, suiqians[i], buildVerticalStar(suiqians[i], "type-annual", b, true), true);
             }
 
-            pushStar(liuLuBranch, "流祿", buildVerticalStar("流祿", "type-annual", liuLuBranch, true), true);
-            pushStar(liuQyBranch, "流羊", buildVerticalStar("流羊", "type-annual-malefic", liuQyBranch, true), true);
-            pushStar(liuTlBranch, "流陀", buildVerticalStar("流陀", "type-annual-malefic", liuTlBranch, true), true);
+            // 【新增：流年旬空、流年旬亡】
+            let annualXun = getXunKongWang(lnStem, lnBranch);
+            pushStar(annualXun.kong, "流旬空", buildVerticalStar("流旬空", "type-annual", annualXun.kong, true), true);
+            pushStar(annualXun.wang, "流旬亡", buildVerticalStar("流旬亡", "type-annual", annualXun.wang, true), true);
 
+            pushStar(liuLuBranch, "流祿", buildVerticalStar("流祿", "type-annual", liuLuBranch, true), true);
+            
+            // 【修正：更名為 流擎】
+            pushStar(liuQyBranch, "流擎", buildVerticalStar("流擎", "type-annual-malefic", liuQyBranch, true), true);
+            
+            pushStar(liuTlBranch, "流陀", buildVerticalStar("流陀", "type-annual-malefic", liuTlBranch, true), true);
             pushStar(liuKy.kui, "流魁", buildVerticalStar("流魁", "type-annual", liuKy.kui, true), true);
             pushStar(liuKy.yue, "流鉞", buildVerticalStar("流鉞", "type-annual", liuKy.yue, true), true);
 
             let liuMaMap = {"寅":"申", "午":"申", "戌":"申", "巳":"亥", "酉":"亥", "丑":"亥", "申":"寅", "子":"寅", "辰":"寅", "亥":"巳", "卯":"巳", "未":"巳"};
             let liuMaPos = liuMaMap[lnBranch];
             if(liuMaPos) pushStar(liuMaPos, "流馬", buildVerticalStar("流馬", "type-annual", liuMaPos, true), true);
-
-            // 【流年旬空、旬亡】
-            let lnSIdx = stems.indexOf(lnStem);
-            let lnBIdx = standardBranches.indexOf(lnBranch);
-            let lnOffset = (lnBIdx - lnSIdx + 12) % 12;
-            let lnKong1 = standardBranches[(lnOffset + 10) % 12];
-            let lnKong2 = standardBranches[(lnOffset + 11) % 12];
-            pushStar(lnKong1, "流旬空", buildVerticalStar("流旬空", "type-annual", lnKong1, true), true);
-            pushStar(lnKong2, "流旬亡", buildVerticalStar("流旬亡", "type-annual", lnKong2, true), true);
         }
 
         const boshiGods = ["博士", "力士", "青龍", "小耗", "將軍", "奏書", "飛簾", "喜神", "病符", "大耗", "伏兵", "官府"];
@@ -1608,6 +1610,7 @@ function generateChart() {
                     
                     <div class="palace-body">
                         <div class="primary-stars-row">${row1Html || ''}</div>
+                        <!-- 副星與流年星統一由右至左排列 -->
                         <div class="secondary-stars-row">${row2Html || ''}</div>
                         
                         <div class="palace-footer">
