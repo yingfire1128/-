@@ -884,7 +884,7 @@ const rawMiaoWangMap = {
 
 function getHardcodedMiao(starName, palaceBranch) {
     let baseName = starName.replace('流', '');
-    // 修正：流擎正名對應
+    // 修正：支援將流羊正名為流擎後的轉換判斷
     if (baseName === '羊' || baseName === '擎') baseName = '擎羊';
     if (baseName === '陀') baseName = '陀羅';
     if (baseName === '祿') baseName = '祿存';
@@ -1392,7 +1392,7 @@ function generateChart() {
         pushStar(branches[fgIdx2], "鳳閣", buildVerticalStar("鳳閣", "type-minor", branches[fgIdx2], false));
         pushStar(branches[fgIdx2], "解神", buildVerticalStar("解神", "type-minor", branches[fgIdx2], false));
 
-        // 【天才與天壽精準回歸】
+        // 【天才與天壽】
         let tcaiIdx = (mingIdx + yearBranchIdx) % 12;
         let tsIdx = (shenIdx + yearBranchIdx) % 12;
         pushStar(branches[tcaiIdx], "天才", buildVerticalStar("天才", "type-minor", branches[tcaiIdx], false));
@@ -1455,7 +1455,9 @@ function generateChart() {
             }
         });
 
-        // 【新增：當生旬空、旬亡】 - 陽支為空、陰支為亡
+        // ==========================================
+        // 【新增：旬空、旬亡 計算函數】 (陽為空，陰為亡)
+        // ==========================================
         function getXunKongWang(stemStr, branchStr) {
             let sIdx = stems.indexOf(stemStr);
             let bIdx = standardBranches.indexOf(branchStr);
@@ -1470,12 +1472,15 @@ function generateChart() {
             }
             return res;
         }
+        
+        // 推算當生旬空、旬亡
         let natalXun = getXunKongWang(yearStem, yearBranch);
         pushStar(natalXun.kong, "旬空", buildVerticalStar("旬空", "type-minor", natalXun.kong, false));
         pushStar(natalXun.wang, "旬亡", buildVerticalStar("旬亡", "type-minor", natalXun.wang, false));
 
+
         // ==========================================
-        // 【流年星曜】：全數納入 isAnnualRow = true (合併入 row2)
+        // 【流年星曜】：全數納入
         // ==========================================
         if (viewMode === 'annual') {
             const jiangqians = ["將星", "攀鞍", "歲驛", "息神", "華蓋", "劫煞", "災煞", "天煞", "指背", "咸池", "月煞", "亡神"];
@@ -1498,14 +1503,14 @@ function generateChart() {
                 pushStar(b, suiqians[i], buildVerticalStar(suiqians[i], "type-annual", b, true), true);
             }
 
-            // 【新增：流年旬空、流年旬亡】
+            // 推算流年旬空、旬亡
             let annualXun = getXunKongWang(lnStem, lnBranch);
             pushStar(annualXun.kong, "流旬空", buildVerticalStar("流旬空", "type-annual", annualXun.kong, true), true);
             pushStar(annualXun.wang, "流旬亡", buildVerticalStar("流旬亡", "type-annual", annualXun.wang, true), true);
 
             pushStar(liuLuBranch, "流祿", buildVerticalStar("流祿", "type-annual", liuLuBranch, true), true);
             
-            // 【修正：更名為 流擎】
+            // 【修正：流擎】
             pushStar(liuQyBranch, "流擎", buildVerticalStar("流擎", "type-annual-malefic", liuQyBranch, true), true);
             
             pushStar(liuTlBranch, "流陀", buildVerticalStar("流陀", "type-annual-malefic", liuTlBranch, true), true);
@@ -1610,7 +1615,6 @@ function generateChart() {
                     
                     <div class="palace-body">
                         <div class="primary-stars-row">${row1Html || ''}</div>
-                        <!-- 副星與流年星統一由右至左排列 -->
                         <div class="secondary-stars-row">${row2Html || ''}</div>
                         
                         <div class="palace-footer">
