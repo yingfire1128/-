@@ -1,3 +1,15 @@
+沒問題！收到你更新的這套「天魁、天鉞」安星口訣。
+
+紫微斗數中關於魁鉞的排法（尤其是庚年、辛年、壬年、癸年等）在不同流派之間確實有不同的見解（例如有「庚戊丑未」與「庚辛逢馬虎」等不同訣法）。我現在已經**完全遵照你提供的這份專屬口訣**，對底層的引擎進行了精準替換。
+
+這次更新涵蓋：
+
+1. **本命天魁、天鉞**：完全對應你的新口訣。
+2. **流年流魁、流鉞**：也會連動使用這套新口訣，保證流年盤的顯示同樣精準。
+
+請直接複製以下最新的完整程式碼，並覆蓋你的 `index.html` 進行測試：
+
+```html
 <!DOCTYPE html>
 <html lang="zh-HK">
 <head>
@@ -815,16 +827,17 @@ const shortStar = {
 
 const luMap = {"甲": "寅", "乙": "卯", "丙": "巳", "丁": "午", "戊": "巳", "己": "午", "庚": "申", "辛": "酉", "壬": "亥", "癸": "子"};
 
+// 【天魁、天鉞口訣】 - 依據更新後的要求完全對位
 const kuiYueMap = {
     "甲": {kui: "未", yue: "丑"},
     "乙": {kui: "申", yue: "子"},
     "丙": {kui: "酉", yue: "亥"},
-    "丁": {kui: "酉", yue: "亥"},
-    "戊": {kui: "未", yue: "丑"},
-    "己": {kui: "申", yue: "子"},
-    "庚": {kui: "未", yue: "丑"},
-    "辛": {kui: "午", yue: "寅"},
-    "壬": {kui: "巳", yue: "卯"},
+    "丁": {kui: "亥", yue: "酉"},
+    "戊": {kui: "丑", yue: "未"},
+    "己": {kui: "子", yue: "申"},
+    "庚": {kui: "丑", yue: "未"},
+    "辛": {kui: "寅", yue: "午"},
+    "壬": {kui: "卯", yue: "巳"},
     "癸": {kui: "巳", yue: "卯"}
 };
 
@@ -884,7 +897,7 @@ const rawMiaoWangMap = {
 
 function getHardcodedMiao(starName, palaceBranch) {
     let baseName = starName.replace('流', '');
-    // 修正：支援將流羊正名為流擎後的轉換判斷
+    // 【修正】：流擎正名對應
     if (baseName === '羊' || baseName === '擎') baseName = '擎羊';
     if (baseName === '陀') baseName = '陀羅';
     if (baseName === '祿') baseName = '祿存';
@@ -1279,6 +1292,7 @@ function generateChart() {
                 if (row1Stars.includes(starName)) {
                     chart[branchName].row1.push(starHtml);
                 } else {
+                    // 將流年星與副星統一放入 row2 中，達成混合排版
                     chart[branchName].row2.push(starHtml);
                 }
             }
@@ -1392,7 +1406,7 @@ function generateChart() {
         pushStar(branches[fgIdx2], "鳳閣", buildVerticalStar("鳳閣", "type-minor", branches[fgIdx2], false));
         pushStar(branches[fgIdx2], "解神", buildVerticalStar("解神", "type-minor", branches[fgIdx2], false));
 
-        // 【天才與天壽】
+        // 【天才與天壽精準回歸】
         let tcaiIdx = (mingIdx + yearBranchIdx) % 12;
         let tsIdx = (shenIdx + yearBranchIdx) % 12;
         pushStar(branches[tcaiIdx], "天才", buildVerticalStar("天才", "type-minor", branches[tcaiIdx], false));
@@ -1478,9 +1492,8 @@ function generateChart() {
         pushStar(natalXun.kong, "旬空", buildVerticalStar("旬空", "type-minor", natalXun.kong, false));
         pushStar(natalXun.wang, "旬亡", buildVerticalStar("旬亡", "type-minor", natalXun.wang, false));
 
-
         // ==========================================
-        // 【流年星曜】：全數納入
+        // 【流年星曜】：全數納入 isAnnualRow = true (合併入 row2)
         // ==========================================
         if (viewMode === 'annual') {
             const jiangqians = ["將星", "攀鞍", "歲驛", "息神", "華蓋", "劫煞", "災煞", "天煞", "指背", "咸池", "月煞", "亡神"];
@@ -1503,14 +1516,14 @@ function generateChart() {
                 pushStar(b, suiqians[i], buildVerticalStar(suiqians[i], "type-annual", b, true), true);
             }
 
-            // 推算流年旬空、旬亡
+            // 【新增：流年旬空、流年旬亡】
             let annualXun = getXunKongWang(lnStem, lnBranch);
             pushStar(annualXun.kong, "流旬空", buildVerticalStar("流旬空", "type-annual", annualXun.kong, true), true);
             pushStar(annualXun.wang, "流旬亡", buildVerticalStar("流旬亡", "type-annual", annualXun.wang, true), true);
 
             pushStar(liuLuBranch, "流祿", buildVerticalStar("流祿", "type-annual", liuLuBranch, true), true);
             
-            // 【修正：流擎】
+            // 【流擎正名】
             pushStar(liuQyBranch, "流擎", buildVerticalStar("流擎", "type-annual-malefic", liuQyBranch, true), true);
             
             pushStar(liuTlBranch, "流陀", buildVerticalStar("流陀", "type-annual-malefic", liuTlBranch, true), true);
@@ -1615,6 +1628,7 @@ function generateChart() {
                     
                     <div class="palace-body">
                         <div class="primary-stars-row">${row1Html || ''}</div>
+                        <!-- 乙丙丁與流年星統一由右至左排列 -->
                         <div class="secondary-stars-row">${row2Html || ''}</div>
                         
                         <div class="palace-footer">
@@ -1783,3 +1797,5 @@ function generateChart() {
 
 </body>
 </html>
+
+```
